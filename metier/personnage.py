@@ -52,26 +52,23 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = Config.env_height
             self.y_velocity = 0
             self.is_jumping = False
+            self.on_ground = True
     def jump(self):
-        if not self.is_jumping:
+        if not self.is_jumping or self.on_ground:
             self.y_velocity = -20
             self.is_jumping = True
 
     def handle_collision(self, plateformes):
-        self.on_ground = False  # Réinitialise l'état "au sol"
-
-        # Vérifier la collision avec toutes les plateformes
+        self.on_ground = False
         collisions = pygame.sprite.spritecollide(self, plateformes, False)
-
         for plateforme in collisions:
-            if self.dy > 0:
-                print("okk")# Si le joueur tombe
-                self.rect.bottom = plateforme.rect.top  # Bloque le joueur sur la plateforme
-                self.dy = 0  # Annule la vitesse verticale
+            if self.y_velocity > 0:
+                self.rect.bottom = plateforme.rect.top
+                self.y_velocity = 0
                 self.on_ground = True
-                break  # Sort de la boucle après une collision
-            elif self.dy < 0:  # Si le joueur tape une plateforme en sautant
+                break
+            elif self.y_velocity < 0:
                 self.rect.top = plateforme.rect.bottom
-                self.dy = 0  # Annule la vitesse vers le haut
+                self.y_velocity = 0
 
 
