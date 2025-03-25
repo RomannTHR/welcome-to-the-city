@@ -21,8 +21,9 @@ def main():
     pygame.display.set_caption("Futur")
 
     player1 = Player()
-    step1 = Step(500, 500, "Objects/plateforme.jpg")
-    steps = [step1]
+    step1 = Step(500, 550, "Objects/plateforme.jpg",False,0,750,"vert")
+    steps = pygame.sprite.Group()
+    steps.add(step1)
     Partie(player1, steps, screen)
 
 
