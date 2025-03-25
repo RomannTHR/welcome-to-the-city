@@ -9,6 +9,7 @@ try:
     from pygame.locals import *
     from utils.utils import load_png
     from config.config import Config
+    from metier.projectiles import Projectile
 except ImportError as err:
     print(f"couldn't load module. {err}")
     sys.exit(2)
@@ -24,9 +25,9 @@ class Player(pygame.sprite.Sprite):
         self.is_jumping = False
         self.y_velocity = 0
         self.reinit()
-        self.dy = 0
         self.rect.x = 0
         self.rect.y = 700
+        self.sended_projectile = pygame.sprite.Group()
 
     def reinit(self):
         self.movepos = [0,0]
@@ -39,6 +40,9 @@ class Player(pygame.sprite.Sprite):
             self.movepos = [-self.speed, 0]
         elif keys[pygame.K_RIGHT]:
             self.movepos = [self.speed, 0]
+        elif keys[pygame.K_SPACE]:
+            projectile = Projectile(self.rect.x, self.rect.y, "Rien")
+            self.sended_projectile.add(projectile)
         else:
             self.movepos = [0, 0]
         self.rect.x += self.movepos[0]
@@ -46,7 +50,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = max(0, min(self.rect.x, Config.env_width))
         self.rect.y = max(0, min(self.rect.y, Config.env_height))
         self.y_velocity += Config.GRAVITY
-
+        self.sended_projectile.update()
         self.rect.y += self.y_velocity
         if self.rect.bottom >= Config.env_height:
             self.rect.bottom = Config.env_height
@@ -71,4 +75,11 @@ class Player(pygame.sprite.Sprite):
                 self.rect.top = plateforme.rect.bottom
                 self.y_velocity = 0
 
-
+    def handle_collision_power(self, powersUp):
+        collisions = pygame.sprite.spritecollide(self, powersUp, False)
+        if collisions :
+                collisions[0].kill()
+    def handle_collision_ennemie(self, ennemies):
+        collisions = pygame.sprite.spritecollide(self, ennemies, False)
+        if collisions :
+            print("aille")
