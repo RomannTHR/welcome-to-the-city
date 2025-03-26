@@ -1,4 +1,5 @@
 try:
+    import time
     import sys
     import random
     import math
@@ -15,7 +16,7 @@ except ImportError as err:
     sys.exit(2)
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self):
+    def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = load_png("Personnages/ssm.jpg")
         screen = pygame.display.get_surface()
@@ -25,8 +26,12 @@ class Player(pygame.sprite.Sprite):
         self.is_jumping = False
         self.y_velocity = 0
         self.reinit()
-        self.rect.x = 0
-        self.rect.y = 700
+        self.rect.x = x
+        self.rect.y = y
+        self.last_shot_time = 0
+        self.shoot_cooldown = 0.5
+        self.rect.height = self.image.get_height()
+        self.rect.width = self.image.get_width()
         self.sended_projectile = pygame.sprite.Group()
 
     def reinit(self):
@@ -41,8 +46,7 @@ class Player(pygame.sprite.Sprite):
         elif keys[pygame.K_RIGHT]:
             self.movepos = [self.speed, 0]
         elif keys[pygame.K_SPACE]:
-            projectile = Projectile(self.rect.x, self.rect.y, "Rien")
-            self.sended_projectile.add(projectile)
+            self.tirer()
         else:
             self.movepos = [0, 0]
         self.rect.x += self.movepos[0]
@@ -82,4 +86,18 @@ class Player(pygame.sprite.Sprite):
     def handle_collision_ennemie(self, ennemies):
         collisions = pygame.sprite.spritecollide(self, ennemies, False)
         if collisions :
+            self.hurt(collisions[0].dammages)
             print("aille")
+    def tirer(self):
+        current_time=time.time()
+        if current_time - self.last_shot_time > self.shoot_cooldown:
+            projectile = Projectile(self.rect.x + 20, self.rect.y, "Rien")
+            self.sended_projectile.add(projectile)
+            self.last_shot_time = current_time
+    def hurt(self, dammages):
+        if self.life>dammages:
+            self.life-=dammages
+        else:
+            self.explode()
+    def explode(self):
+        print("Chui mort")
