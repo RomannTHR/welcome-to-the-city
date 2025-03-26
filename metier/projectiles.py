@@ -14,7 +14,7 @@ except ImportError as err:
     sys.exit(2)
 class Projectile(pygame.sprite.Sprite):
 
-    def __init__(self,x,y,type):
+    def __init__(self,x,y,type,dammages=10):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = load_png("Projectiles/projectile.jpg")
         screen = pygame.display.get_surface()
@@ -27,6 +27,9 @@ class Projectile(pygame.sprite.Sprite):
         self.type = type
         self.rect.x = self.x
         self.rect.y = self.y
+        self.dammages = dammages
+        self.rect.height = self.image.get_height()
+        self.rect.width = self.image.get_width()
         self.direction = 1
     def update (self):
         self.rect.x += self.speed * self.direction
@@ -36,6 +39,5 @@ class Projectile(pygame.sprite.Sprite):
     def handle_collision(self, ennemies):
         collisions = pygame.sprite.spritecollide(self, ennemies, False)
         if collisions:
-            for ennemie in ennemies:
-                if abs(self.rect.centery - ennemie.rect.centery) < 20:
-                    self.explode()
+            self.explode()
+            collisions[0].hurt(self.dammages)
