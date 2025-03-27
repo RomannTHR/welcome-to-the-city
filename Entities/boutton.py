@@ -1,5 +1,4 @@
 import pygame
-from utils.utils import  load_png
 
 class Button:
     def __init__(self,x,y,text,state,action,parameter):
@@ -12,10 +11,14 @@ class Button:
         self.parameter = parameter
 
     def draw(self,screen):
-        pygame.draw.rect(screen, (0, 255, 0), self.rect)
-
+        if(self.state =="Locked"):
+            pygame.draw.rect(screen, (255, 0, 0), self.rect)
+        elif(self.state=="Unlocked"):
+            pygame.draw.rect(screen, (0, 0, 255), self.rect)
+        elif(self.state=="Start"):
+            pygame.draw.rect(screen, (0, 255, 0), self.rect)
     def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and (self.state =="Unlocked" or self.state=="Start"):
             if self.rect.collidepoint(event.pos):
                 if self.action:
                     self.action(self.parameter)
