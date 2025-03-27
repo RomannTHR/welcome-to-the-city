@@ -14,29 +14,30 @@ except ImportError as err:
     sys.exit(2)
 class Step(pygame.sprite.Sprite):
 
-    def __init__(self,x,y,image_path,movable,start,end,direction):
+    def __init__(self,x,y,image_path,start,end,direction,speed=0):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = load_png(image_path)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.speed = 5
+        self.speed = speed
         self.direction = 1
-        self.movable = movable
+        self.velocity = self.direction * self.speed
         self.start = start
         self.end = end
         self.movment_direction = direction
     def update(self):
-        if self.movable:
+        self.velocity = self.direction * self.speed
+        if self.speed>0:
             if self.movment_direction == "hor":
-                self.rect.x += self.speed * self.direction
+                self.rect.x += self.velocity
 
                 if self.rect.x >= self.end:
                     self.direction = -1
                 elif self.rect.x <= self.start:
                     self.direction = 1
             elif self.movment_direction == "vert":
-                self.rect.y += self.speed * self.direction
+                self.rect.y += self.velocity
 
                 if self.rect.y >= self.end:
                     self.direction = -1

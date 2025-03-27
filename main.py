@@ -9,7 +9,7 @@ try:
     from pygame.locals import *
     from utils.utils import load_png
     from metier.personnage import Player
-    from metier.partie import Partie
+    from metier.niveau import Niveau
     from metier.platerforme import Step
     from metier.powerUp import PowerUp
     from metier.ennemis import Ennemies
@@ -21,10 +21,10 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((Config.screen_width, Config.screen_height))
     pygame.display.set_caption("Futur")
-    powerUp1 = PowerUp(500,800,"powerUp/powerUp.png")
-    powerUp2 = PowerUp(900, 800, "powerUp/powerUp.png")
+    powerUp1 = PowerUp(500,800,"powerUp/powerUp.jpg","Life")
+    powerUp2 = PowerUp(900, 800, "powerUp/powerUp.jpg","Life")
     player1 = Player(0,750)
-    step1 = Step(500, 550, "Objects/plateforme.jpg",False,0,750,"vert")
+    step1 = Step(500, 550, "Objects/plateforme.jpg",0,750,"hor",5)
     ennemie1 = Ennemies(800,750,400,1200)
     steps = pygame.sprite.Group()
     powersUp = pygame.sprite.Group()
@@ -32,7 +32,7 @@ def main():
     powersUp.add(powerUp1,powerUp2)
     steps.add(step1)
     ennemies.add(ennemie1)
-    Partie(player1, steps, powersUp,ennemies,screen)
+    Niveau(player1, steps, powersUp,ennemies,screen)
 
 
 if __name__ == "__main__":
