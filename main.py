@@ -33,7 +33,7 @@ def main():
     powersUp.add(powerUp1,powerUp2)
     steps.add(step1)
     ennemies.add(ennemie1)
-    niveau1 = Niveau(player1, steps, powersUp,ennemies,screen)
+    niveau1 = Niveau(player1, steps, powersUp,ennemies,screen,"Unlocked")
     niveau2 = Niveau(player1, steps, powersUp,ennemies,screen)
     niveau3 = Niveau(player1, steps, powersUp,ennemies,screen)
     niveau4 = Niveau(player1, steps, powersUp,ennemies,screen)

@@ -13,7 +13,7 @@ from config.config import Config
 from metier.projectiles import Projectile
 
 class Niveau(pygame.sprite.Sprite):
-    def __init__(self, player, plateformes,powersUp,ennemies, screen,state="locked"):
+    def __init__(self, player, plateformes,powersUp,ennemies, screen,state="Locked"):
         pygame.sprite.Sprite.__init__(self)
         self.player = player
         self.plateformes = plateformes
