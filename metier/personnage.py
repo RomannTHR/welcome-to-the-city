@@ -99,12 +99,17 @@ class Player(pygame.sprite.Sprite):
             collisions[0].kill()
     def handle_collision_ennemie(self, ennemies):
         collisions = pygame.sprite.spritecollide(self, ennemies, False)
+
         if collisions :
-            current_time = time.time()
-            if current_time - self.last_ennemy_time > self.last_ennemy_cooldown:
-                self.hurt(collisions[0].dammages)
-                self.last_ennemy_time = current_time
-                print("aille")
+            #Si le joueur arrive du haut et qu'il est en train de redescendre
+            if self.y_velocity > 0:
+                collisions[0].explode()
+            else:
+                current_time = time.time()
+                if current_time - self.last_ennemy_time > self.last_ennemy_cooldown:
+                    self.hurt(collisions[0].dammages)
+                    self.last_ennemy_time = current_time
+                    print("aille")
     def tirer(self):
         if self.power == "Tirer" :
             current_time=time.time()
