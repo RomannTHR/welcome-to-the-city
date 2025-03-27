@@ -26,8 +26,6 @@ class Niveau(pygame.sprite.Sprite):
         self.all_sprites.add(self.plateformes)
         self.all_sprites.add(self.powersUp)
         self.all_sprites.add(self.ennemies)
-        #self.run()
-
     def update(self):
         self.all_sprites.update()
         self.all_sprites.update()
@@ -43,17 +41,27 @@ class Niveau(pygame.sprite.Sprite):
         self.player.sended_projectile.draw(self.screen)
         pygame.display.flip()
 
-    def run(self):
+    def run(self,screen):
         clock = pygame.time.Clock()
+        background = pygame.image.load("IMG/Level-Font/Free-City-Backgrounds-Pixel-Art2-1536x1024.jpg")  
+        background = pygame.transform.scale(background, (Config.screen_width, Config.screen_height))  # Ajuster la taille si nécessaire
         running = True
         while running:
+            clock.tick(60)  # Limite à 60 FPS
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
                         self.player.jump()
+            # **1. Dessiner l'image de fond d'abord**
+            screen.blit(background, (0, 0))
+            
+            # **2. Mettre à jour et dessiner les sprites**
             self.update()
-            self.draw()
-            clock.tick(60)
+            self.all_sprites.draw(self.screen)
+            self.player.sended_projectile.draw(self.screen)
+
+            # **3. Mettre à jour l'affichage (évite le clignotement)**
+            pygame.display.update()  # Peut aussi être pygame.display.flip()
         pygame.quit()
