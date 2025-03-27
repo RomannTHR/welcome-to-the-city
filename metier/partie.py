@@ -27,13 +27,14 @@ class Partie(pygame.sprite.Sprite):
         self.niveaux = niveaux
         self.bouttons = []
         self.draw(screen)
+        self.screen = screen
     def startNiveau(self, number_level_to_start):
         if(self.niveaux[number_level_to_start]).state=="unlocked":
             Level_to_start = self.niveaux[number_level_to_start]
             Level_to_start.run()
     def draw(self,screen):
         for i,niveau in enumerate(self.niveaux.sprites()):
-            bouton = Button(Config.PARTIE_BOUTTON_X[i],Config.PARTIE_BOUTTON_Y[i],"Test","Locked",niveau.run)
+            bouton = Button(Config.PARTIE_BOUTTON_X[i],Config.PARTIE_BOUTTON_Y[i],"Test","Locked",niveau.run,self.screen)
             self.bouttons.append(bouton)
         running = True
         while running:
