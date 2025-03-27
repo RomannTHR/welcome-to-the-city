@@ -1,6 +1,6 @@
 class Config:
-    screen_height = 950
-    screen_width = 1720
-    env_height = 950
-    env_width = 1720
+    screen_height = 1080
+    screen_width = 1920
+    env_height = 1080
+    env_width = 1920
     GRAVITY = 0.5

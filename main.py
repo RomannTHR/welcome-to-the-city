@@ -21,6 +21,8 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((Config.screen_width, Config.screen_height))
     pygame.display.set_caption("Futur")
+
+    #background = pygame.transform.scale(background, (WIDTH, HEIGHT))  
     powerUp1 = PowerUp(500,800,"powerUp/powerUp.png")
     powerUp2 = PowerUp(900, 800, "powerUp/powerUp.png")
     player1 = Player(0,750)
