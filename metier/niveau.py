@@ -26,8 +26,6 @@ class Niveau(pygame.sprite.Sprite):
         self.all_sprites.add(self.plateformes)
         self.all_sprites.add(self.powersUp)
         self.all_sprites.add(self.ennemies)
-        self.run(screen)
-
     def update(self):
         self.all_sprites.update()
         self.all_sprites.update()
