@@ -21,6 +21,13 @@ class Partie(pygame.sprite.Sprite):
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
         self.all_sprites.add(self.plateformes)
+
+        #Charger le background de la partie 
+
+        self.background = pygame.image.load(os.path.join("IMG/Level-Font", "Free-City-Backgrounds-Pixel-Art2-1536x1024.jpg")).convert()
+        self.bg_width = self.background.get_width()
+
+
         self.run()
 
     def update(self):
