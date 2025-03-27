@@ -10,13 +10,15 @@ from utils.utils import load_png
 from metier.personnage import Player
 from metier.platerforme import Step
 from config.config import Config
-
+from metier.projectiles import Projectile
 
 class Partie(pygame.sprite.Sprite):
-    def __init__(self, player, plateformes, screen):
+    def __init__(self, player, plateformes,powersUp,ennemies, screen):
         pygame.sprite.Sprite.__init__(self)
         self.player = player
         self.plateformes = plateformes
+        self.powersUp = powersUp
+        self.ennemies = ennemies
         self.screen = screen
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
@@ -28,16 +30,24 @@ class Partie(pygame.sprite.Sprite):
         self.bg_width = self.background.get_width()
 
 
+        self.all_sprites.add(self.powersUp)
+        self.all_sprites.add(self.ennemies)
         self.run()
 
     def update(self):
         self.all_sprites.update()
+        self.all_sprites.update()
         self.player.handle_collision(self.plateformes)
-
+        self.player.handle_collision_power(self.powersUp)
+        self.player.handle_collision_ennemie(self.ennemies)
+        for projectile in self.player.sended_projectile:
+            projectile.handle_collision(self.ennemies)
+        self.player.sended_projectile.update()
     def draw(self):
-        self.screen.fill((0, 0, 0))  # Remplit l'écran en noir
+        self.screen.fill((0, 0, 0))
         self.all_sprites.draw(self.screen)
-        pygame.display.flip()  # Met à jour l'affichage
+        self.player.sended_projectile.draw(self.screen)
+        pygame.display.flip()
 
     def run(self):
         clock = pygame.time.Clock()
