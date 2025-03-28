@@ -27,7 +27,6 @@ class Partie(pygame.sprite.Sprite):
         self.niveaux = niveaux
         self.bouttons = []
         self.screen = screen
-        self.draw(screen)
     def draw(self,screen):
         for i,niveau in enumerate(self.niveaux.sprites()):
             bouton = Button(Config.PARTIE_BOUTTON_X[i],Config.PARTIE_BOUTTON_Y[i],i,niveau.state,niveau.run,self.screen)

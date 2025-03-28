@@ -15,6 +15,7 @@ try:
     from metier.ennemis import Ennemies
     from metier.partie import Partie
     from config.config import Config
+    from Ecran.start import Start
 except ImportError as err:
     print(f"couldn't load module. {err}")
     sys.exit(2)
@@ -41,7 +42,8 @@ def main():
     niveau6 = Niveau(player1, steps, powersUp,ennemies,screen)
     niveaux = pygame.sprite.Group()
     niveaux.add(niveau1,niveau2,niveau3,niveau4,niveau5,niveau6)
-    Partie("Test", niveaux,screen)
+    #Partie("Test", niveaux,screen)
+    Start(screen)
 
 
 if __name__ == "__main__":

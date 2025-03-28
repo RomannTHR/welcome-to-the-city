@@ -19,6 +19,7 @@ class Button:
             pygame.draw.rect(screen, (0, 255, 0), self.rect)
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and (self.state =="Unlocked" or self.state=="Start"):
+            print("iii")
             if self.rect.collidepoint(event.pos):
                 if self.action:
                     self.action(self.parameter)
