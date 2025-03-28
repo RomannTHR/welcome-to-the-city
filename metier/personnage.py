@@ -84,6 +84,12 @@ class Player(pygame.sprite.Sprite):
                 self.y_velocity = 0
         if self.on_ground:
             self.rect.x += collisions[0].velocity*2
+    def handle_collision_cartes(self, cartes):
+        collisions = pygame.sprite.spritecollide(self, cartes, False)
+        for carte in collisions:
+            carte.kill()
+            return 1
+        return 0
 
     def handle_collision_power(self, powersUp):
         collisions = pygame.sprite.spritecollide(self, powersUp, False)
@@ -103,13 +109,12 @@ class Player(pygame.sprite.Sprite):
         if collisions :
             #Si le joueur arrive du haut et qu'il est en train de redescendre
             if self.y_velocity > 0:
-                collisions[0].explode()
+                collisions[0].hurt(10)
             else:
                 current_time = time.time()
                 if current_time - self.last_ennemy_time > self.last_ennemy_cooldown:
                     self.hurt(collisions[0].dammages)
                     self.last_ennemy_time = current_time
-                    print("aille")
     def tirer(self):
         if self.power == "Tirer" :
             current_time=time.time()

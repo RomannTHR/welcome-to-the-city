@@ -13,26 +13,30 @@ from config.config import Config
 from metier.projectiles import Projectile
 
 class Niveau(pygame.sprite.Sprite):
-    def __init__(self, player, plateformes,powersUp,ennemies, screen,state="Locked"):
+    def __init__(self, player, plateformes,powersUp,ennemies,cartes, screen,state="Locked"):
         pygame.sprite.Sprite.__init__(self)
         self.player = player
         self.plateformes = plateformes
         self.powersUp = powersUp
         self.ennemies = ennemies
+        self.cartes = cartes
         self.screen = screen
         self.state = state
+        self.cartes = cartes
+        self.cartes_founded = 0
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
         self.all_sprites.add(self.plateformes)
         self.all_sprites.add(self.powersUp)
         self.all_sprites.add(self.ennemies)
+        self.all_sprites.add(self.cartes)
 
     def update(self):
-        self.all_sprites.update()
         self.all_sprites.update()
         self.player.handle_collision(self.plateformes)
         self.player.handle_collision_power(self.powersUp)
         self.player.handle_collision_ennemie(self.ennemies)
+        self.cartes_founded += self.player.handle_collision_cartes(self.cartes)
         for projectile in self.player.sended_projectile:
             projectile.handle_collision(self.ennemies)
         self.player.sended_projectile.update()
