@@ -29,20 +29,6 @@ class Niveau(pygame.sprite.Sprite):
         self.tilemap = tilemap
         self.cartes = cartes
         self.cartes_founded = 0
-=========
-    def __init__(self, game, state="locked"):
-        pygame.sprite.Sprite.__init__(self)
-        self.game = game
-        self.player = game.player
-        self.plateformes = game.steps
-        self.powersUp = game.powersUp
-        self.ennemies = game.ennemies
-        self.screen = game.screen
-        self.display = game.display
-        self.state = state
-        self.scroll = game.scroll
-        self.tilemap = game.tilemap
->>>>>>>>> Temporary merge branch 2
         self.all_sprites = pygame.sprite.Group()
 
         self.movement = [False, False]

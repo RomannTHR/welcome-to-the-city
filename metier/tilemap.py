@@ -1,3 +1,4 @@
+import json
 import pygame
 
 
@@ -9,11 +10,8 @@ class Tilemap:
         self.game = game
         self.tile_size = tile_size
         self.tilemap = {}
-        self.offgrid_tiles = {}
+        self.offgrid_tiles = []
 
-        for i in range(10):
-            self.tilemap[str(i + 3) + ';10'] = {'type': 'grass', 'variant': 1, 'pos': (i + 3, 10)}
-            self.tilemap['10;' + str(i + 5)] = {'type': 'stone', 'variant': 1, 'pos': (10, i + 5)}
 
     def tiles_around(self, pos):
         tiles = []
@@ -38,6 +36,11 @@ class Tilemap:
             print(tile['pos'])
         return rects
     
+    def save(self, path):
+        f = open(path, 'w')
+        json.dump({'tilemap': self.tilemap, 'tile_size': self.tile_size, 'offgrid' : self.offgrid_tiles}, f)
+        f.close()
+
     def render(self, surf, offset=(0,0)):
         for tile in self.offgrid_tiles:
             surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] - offset[0], tile['pos'][1] - offset[1]))

@@ -62,6 +62,7 @@ class Animation:
                 
     def img(self):
         return self.images[int(self.frame / self.img_duration)] #the frame is the frame of the game and not of the image, that means to get the correct image we have to divide by his duration time
+
 def set_Rectangle(x,y,width,height,text,font_size,background_color,font_color,screen):
     font = pygame.font.Font(None, font_size)
 
