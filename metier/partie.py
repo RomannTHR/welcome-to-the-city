@@ -14,16 +14,32 @@ try:
     from metier.powerUp import PowerUp
     from metier.ennemis import Ennemies
     from config.config import Config
+    from Entities.boutton import Button
 except ImportError as err:
     print(f"couldn't load module. {err}")
     sys.exit(2)
 
 
 class Partie(pygame.sprite.Sprite):
-    def __init__(self, nom,niveaux):
+    def __init__(self, nom,niveaux,screen):
         pygame.sprite.Sprite.__init__(self)
         self.nom = nom
         self.niveaux = niveaux
-    def startNiveau(self, number_level_to_start):
-        if(self.niveaux[number_level_to_start]).state=="unlocked":
-            Level_to_start = self.niveaux[number_level_to_start]
+        self.bouttons = []
+        self.screen = screen
+    def draw(self,screen):
+        for i,niveau in enumerate(self.niveaux.sprites()):
+            bouton = Button(Config.PARTIE_BOUTTON_X[i],Config.PARTIE_BOUTTON_Y[i],i,niveau.state,niveau.run,self.screen)
+            self.bouttons.append(bouton)
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                for button in self.bouttons:
+                    button.handle_event(event)
+                for button in self.bouttons:
+                    button.draw(screen)
+            pygame.display.flip()
+
+        pygame.quit()
