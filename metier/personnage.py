@@ -18,10 +18,10 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = load_png("Personnages/ssm.jpg")
+        self.image, self.rect = load_png("Personnages/Idle/000.png")
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
-        self.speed = 10
+        self.speed = 5
         self.life = 10
         self.is_jumping = False
         self.y_velocity = 0
@@ -65,9 +65,10 @@ class Player(pygame.sprite.Sprite):
             self.y_velocity = 0
             self.is_jumping = False
             self.on_ground = True
+            
     def jump(self):
         if not self.is_jumping or self.on_ground:
-            self.y_velocity = -20
+            self.y_velocity = -15
             self.is_jumping = True
 
     def handle_collision(self, plateformes):
