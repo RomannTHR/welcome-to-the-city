@@ -27,8 +27,6 @@ def load_png(name):
         print(f"Cannot load image: {fullname}")
         raise SystemExit
     return image, image.get_rect()
-def set_Rectangle(x,y,width,height,text,font_size,background_color,font_color,screen):
-    font = pygame.font.Font(None, font_size)
 
 def load_image(path):
     img = pygame.image.load(BASE_IMG_PATH + path).convert()
@@ -64,6 +62,8 @@ class Animation:
                 
     def img(self):
         return self.images[int(self.frame / self.img_duration)] #the frame is the frame of the game and not of the image, that means to get the correct image we have to divide by his duration time
+def set_Rectangle(x,y,width,height,text,font_size,background_color,font_color,screen):
+    font = pygame.font.Font(None, font_size)
 
     text_surface = font.render(text,True,font_color)
     square_rect = pygame.Rect(x,y,width,height)

@@ -1,3 +1,4 @@
+<<<<<<<<< Temporary merge branch 1
 try:
     import sys
     import random
@@ -24,6 +25,7 @@ def main():
     screen = pygame.display.set_mode((Config.screen_width, Config.screen_height))
     pygame.display.set_caption("Welcome to the city")
     Start(screen)
+=========
 import sys
 import random
 import math
@@ -88,10 +90,17 @@ class Game:
         self.steps.add(step1)
         self.ennemies.add(ennemie1)
 
+
+    #Niveau 2 
+
+
+
+    
+
     def run(self):
 
         #Start the level
-        Niveau(self)    
+        Niveau(game=self,player=self.player,plateformes=False, powersUp=self.powersUp, steps=self.steps, ennemies=self.ennemies,cartes=False, screen=self.screen, scroll=self.scroll, display=self.display, tilemap=self.tilemap, state="Locked")    
 
 
 if __name__ == "__main__":
