@@ -72,7 +72,7 @@ class Game:
     def run(self):
 
         #Start the level
-        Niveau(self)    
+        Niveau(game=self,player=self.player,plateformes=False, powersUp=self.powersUp, steps=self.steps, ennemies=self.ennemies,cartes=False, screen=self.screen, scroll=self.scroll, display=self.display, tilemap=self.tilemap, state="Locked")    
 
 
 if __name__ == "__main__":

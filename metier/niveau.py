@@ -15,18 +15,18 @@ from metier.projectiles import Projectile
 
 
 class Niveau(pygame.sprite.Sprite):
-    def __init__(self, player, plateformes,powersUp,ennemies,cartes, screen,state="Locked"):
+    def __init__(self, game=False,player=False, plateformes=False,powersUp=False, steps=False, ennemies=False,cartes=False, screen=False, scroll=False, display=False, tilemap=False, state="Locked"):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
-        self.player = game.player
-        self.plateformes = game.steps
-        self.powersUp = game.powersUp
-        self.ennemies = game.ennemies
-        self.screen = game.screen
-        self.display = game.display
+        self.player = player
+        self.plateformes = steps
+        self.powersUp = powersUp
+        self.ennemies = ennemies
+        self.screen = screen
+        self.display = display
         self.state = state
-        self.scroll = game.scroll
-        self.tilemap = game.tilemap
+        self.scroll = scroll
+        self.tilemap = tilemap
         self.cartes = cartes
         self.cartes_founded = 0
         self.all_sprites = pygame.sprite.Group()
@@ -50,14 +50,14 @@ class Niveau(pygame.sprite.Sprite):
         #for projectile in self.player.sended_projectile:
         #    projectile.handle_collision(self.ennemies)
         #self.player.sended_projectile.update()
-        self.all_sprites.update()
-        self.player.handle_collision(self.plateformes)
-        self.player.handle_collision_power(self.powersUp)
-        self.player.handle_collision_ennemie(self.ennemies)
-        self.cartes_founded += self.player.handle_collision_cartes(self.cartes)
-        for projectile in self.player.sended_projectile:
-            projectile.handle_collision(self.ennemies)
-        self.player.sended_projectile.update()
+        #self.all_sprites.update()
+        #self.player.handle_collision(self.plateformes)
+        #self.player.handle_collision_power(self.powersUp)
+        #self.player.handle_collision_ennemie(self.ennemies)
+        #self.cartes_founded += self.player.handle_collision_cartes(self.cartes)
+        #for projectile in self.player.sended_projectile:
+        #   projectile.handle_collision(self.ennemies)
+        #self.player.sended_projectile.update()
     def draw(self):
         self.screen.fill((0, 0, 0))
         self.all_sprites.draw(self.screen)
