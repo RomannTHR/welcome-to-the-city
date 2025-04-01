@@ -113,12 +113,12 @@ class Game:
                         self.right_clicking = True                            
                     if self.shift == True:
                         if event.button == 4:
-                            self.current_tile_variant = (self.current_tile_variant + 1) % len(self.assets)
+                            self.current_tile_variant = (self.current_tile_variant + 1) % len(self.assets[self.tile_list[self.current_tile_group]])
                         if event.button == 5:
-                            self.current_tile_variant = (self.current_tile_variant - 1) % len(self.tile_list)
+                            self.current_tile_variant = (self.current_tile_variant - 1) % len(self.assets[self.tile_list[self.current_tile_group]])
                     else:
                         if event.button == 4:
-                            self.current_tile_group = (self.current_tile_group + 1) % len(self.assets)
+                            self.current_tile_group = (self.current_tile_group + 1) % len(self.tile_list)
                         if event.button == 5:
                             self.current_tile_group = (self.current_tile_group - 1) % len(self.tile_list)
                 if event.type == pygame.MOUSEBUTTONUP:
@@ -132,9 +132,9 @@ class Game:
                     if event.key == pygame.K_RIGHT:
                         self.movement[1] = True
                     if event.key == pygame.K_UP:
-                        self.movement[2] = True
-                    if event.key == pygame.K_DOWN :
                         self.movement[3] = True
+                    if event.key == pygame.K_DOWN :
+                        self.movement[2] = True
                     if event.key == pygame.K_g:
                         self.ongrid = not self.ongrid
                     if event.key == pygame.K_o:
@@ -148,9 +148,9 @@ class Game:
                     if event.key == pygame.K_RIGHT:
                         self.movement[1] = False
                     if event.key == pygame.K_UP:
-                        self.movement[2] = False
-                    if event.key == pygame.K_DOWN:
                         self.movement[3] = False
+                    if event.key == pygame.K_DOWN:
+                        self.movement[2] = False
                     
                     
 
