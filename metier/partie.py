@@ -56,24 +56,24 @@ class Partie(pygame.sprite.Sprite):
                 #si boutton 1 est cliqué , on lance la partie1 ect...
                 if button1.handle_event(event)==1:
                     Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=self.game.powersUp, steps=self.game.steps, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
-                if button2.handle_event(event) == 1:
+                if button2.handle_event(event) == 1 and button2.state != "Locked":
                     Niveau(game=self.game, player=self.game.player, plateformes=False, powersUp=self.game.powersUp,
                            steps=self.game.steps, ennemies=self.game.ennemies, cartes=False, screen=self.game.screen,
                            scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap,
                            state="Locked")
-                if button3.handle_event(event)==1:
+                if button3.handle_event(event)==1 and button3.state != "Locked":
                     Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=self.game.powersUp, steps=self.game.steps, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
 
-                if button4.handle_event(event)==1:
+                if button4.handle_event(event)==1 and button4.state != "Locked":
                     Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=self.game.powersUp, steps=self.game.steps, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
 
-                if button5.handle_event(event)==1:
+                if button5.handle_event(event)==1 and button5.state != "Locked":
                     Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=self.game.powersUp, steps=self.game.steps, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
-                if button6.handle_event(event)==1:
+                if button6.handle_event(event)==1 and button6.state != "Locked":
                     Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=self.game.powersUp, steps=self.game.steps, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
-                if button7.handle_event(event)==1:
+                if button7.handle_event(event)==1 and button7.state != "Locked":
                     Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=self.game.powersUp, steps=self.game.steps, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
-                if button8.handle_event(event)==1:
+                if button8.handle_event(event)==1 and button8.state != "Locked":
                     Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=self.game.powersUp, steps=self.game.steps, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
 
 
