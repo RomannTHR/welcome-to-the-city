@@ -94,8 +94,9 @@ class Niveau(pygame.sprite.Sprite):
                         self.movement[0] = True
                     if event.key == pygame.K_RIGHT:
                         self.movement[1] = True
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_UP and self.player.isJumping == False:
                         self.player.velocity[1] = -3
+                        self.player.isJumping = True
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
                         self.movement[0] = False

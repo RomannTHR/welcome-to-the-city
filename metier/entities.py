@@ -45,6 +45,8 @@ class PhysicsEntities:
         for rect in tilemap.physics_rect_around(self.pos):
             if entity_rect.colliderect(rect):
                 if frame_movement[1] > 0:
+                    self.isOnGround = True
+                    self.isJumping = False
                     entity_rect.bottom = rect.top
                     self.collisions['down'] = True
                 if frame_movement[1] < 0:
@@ -74,13 +76,14 @@ class Player(PhysicsEntities):
     def __init__(self, game, pos, size):
         super().__init__(game, 'player', pos, size)
         self.air_time = 0
+        self.isOnGround = False
+        self.isJumping = False
     
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
         self.air_time += 1
         if self.collisions['down']:
             self.air_time = 0
-        
         if self.air_time > 4:
             self.set_action('jump')
         elif movement[0] != 0:
