@@ -38,6 +38,7 @@ class Game:
             'stone': load_images('Titles/Stone'),
             'ice': load_images('Titles/Ice'),
             'purplegrass': load_images('Titles/PurpleGrass'),
+            'decor' : load_images('Titles/Decor'),
             'player/idle' : Animation(load_images('Personnages/Idle'), img_dur=6),
             'player/run' : Animation(load_images('Personnages/Run'), img_dur=4),
             'player/jump' : Animation(load_images('Personnages/Idle'), img_dur=6),
