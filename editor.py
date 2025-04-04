@@ -28,18 +28,18 @@ class Game:
         
 
         self.assets = {
-            'grass' : load_images('Titles/Grass'),
-            'stone': load_images('Titles/Stone'),
-            'ice': load_images('Titles/Ice'),
-            'purplegrass': load_images('Titles/PurpleGrass'),
-            'decor' : load_images('Titles/Decor'),
-            'platerforme' : load_images('Titles/Plateformes')
+            'grass' : load_images('Tiles/Grass'),
+            'stone': load_images('Tiles/Stone'),
+            'ice': load_images('Tiles/Ice'),
+            'purplegrass': load_images('Tiles/PurpleGrass'),
+            'decor' : load_images('Tiles/Decor'),
+            'plateforme' : load_images('Tiles/Plateformes')
         }
 
-        print(self.assets['grass'])
+        
 
         self.tilemap = Tilemap(self,tile_size=32)
-
+        self.tilemap.load("Entities/save_editor/map.json")
         self.scroll = [0,0]
 
         self.tile_list = list(self.assets)
@@ -52,9 +52,6 @@ class Game:
         self.shift = False
         self.ongrid = True
     #Niveau 2 
-    
-
-
     
 
     def run(self):
@@ -139,6 +136,8 @@ class Game:
                         self.ongrid = not self.ongrid
                     if event.key == pygame.K_o:
                         self.tilemap.save('Entities/save_editor/map.json')
+                    if event.key == pygame.K_t:
+                        self.tilemap.autotile()
                     if event.key == pygame.K_LSHIFT:
                         self.current_tile_variant = 0
                         self.shift = not self.shift 

@@ -1,10 +1,21 @@
 import json
 import pygame
 
+AUTOTILE_MAP = {
+    tuple(sorted([(1,0), (0,1)])) : 0,
+    tuple(sorted([(1,0), (0,1), (-1,0)])) : 1,
+    tuple(sorted([(-1,0), (0,1)])) : 2,
+    tuple(sorted([(-1,0), (0,-1), (0,1)])) : 3,
+    tuple(sorted([(-1,0), (0,-1)])) : 4,
+    tuple(sorted([(-1,0), (0,-1), (1,0)])) : 5,
+    tuple(sorted([(-1,0), (0,-1)])) : 6,
+    tuple(sorted([(1,0), (0,-1), (0, 1)])) : 7,
+    tuple(sorted([(1,0), (-1,0), (0,1), (0, -1)])) : 8,
+}
 
 NEIGHTBOR_OFFSETS = [(1,0), (1,1), (1,-1), (0,1), (0,-1), (0,0), (-1,1), (-1,-1), (-1,0)] #Utile pour détecter toutes les potentielles entitées autour de notre entité 
-PHYSICS_TILES = {'grass','stone'}
-
+PHYSICS_TILES = {'grass','stone', 'plateforme'}
+AUTOTILE_TILES = {'grass', 'stone'}
 
 class Tilemap:
     def __init__(self, game, tile_size=16):
@@ -52,7 +63,18 @@ class Tilemap:
         self.tilemap_size = data['tile_size']
         self.offgrid_tiles = data['offgrid']
 
-
+    def autotile(self):
+        for loc in self.tilemap:
+            tile = self.tilemap[loc]
+            neightbors = set()
+            for shift in [(1,0), (-1,0), (0, -1), (0, 1)]:
+                check_loc = str(tile['pos'][0] + shift[0]) + ';' + str(tile['pos'][1] + shift[1])
+                if check_loc in self.tilemap:
+                    if self.tilemap[check_loc]['type'] == tile['type']:
+                        neightbors.add(shift)
+            neightbors = tuple(sorted(neightbors))
+            if(tile['type'] in AUTOTILE_TILES) and (neightbors in AUTOTILE_MAP):
+                tile['variant'] = AUTOTILE_MAP[neightbors]
 
     def render(self, surf, offset=(0,0)):
         for tile in self.offgrid_tiles:
