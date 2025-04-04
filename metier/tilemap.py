@@ -5,6 +5,7 @@ import pygame
 NEIGHTBOR_OFFSETS = [(1,0), (1,1), (1,-1), (0,1), (0,-1), (0,0), (-1,1), (-1,-1), (-1,0)] #Utile pour détecter toutes les potentielles entitées autour de notre entité 
 PHYSICS_TILES = {'grass','stone'}
 
+
 class Tilemap:
     def __init__(self, game, tile_size=16):
         self.game = game
@@ -40,6 +41,18 @@ class Tilemap:
         f = open(path, 'w')
         json.dump({'tilemap': self.tilemap, 'tile_size': self.tile_size, 'offgrid' : self.offgrid_tiles}, f)
         f.close()
+
+
+    def load(self, path):
+        f = open(path, 'r')
+        data = json.load(f)
+        f.close()
+        
+        self.tilemap = data['tilemap']
+        self.tilemap_size = data['tile_size']
+        self.offgrid_tiles = data['offgrid']
+
+
 
     def render(self, surf, offset=(0,0)):
         for tile in self.offgrid_tiles:

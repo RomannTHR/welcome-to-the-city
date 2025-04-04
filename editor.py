@@ -52,7 +52,7 @@ class Game:
         self.shift = False
         self.ongrid = True
     #Niveau 2 
-
+    
 
 
     
