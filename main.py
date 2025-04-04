@@ -9,13 +9,14 @@ from pygame.locals import *
 from metier.tilemap import Tilemap
 from utils.utils import Animation, load_png, load_images, load_image
 #from metier.personnage import Player
+from metier.partie import Partie
 from metier.niveau import Niveau
 from metier.platerforme import Step
 from metier.powerUp import PowerUp
 from metier.ennemis import Ennemies
 from metier.entities import PhysicsEntities, Player
 from metier.clouds import Cloud, Clouds
-
+from Entities.boutton import Button
 from config.config import Config
 
 
@@ -40,11 +41,23 @@ class Game:
             'player/idle' : Animation(load_images('Personnages/Idle'), img_dur=6),
             'player/run' : Animation(load_images('Personnages/Run'), img_dur=4),
             'player/jump' : Animation(load_images('Personnages/Idle'), img_dur=6),
+            'level1': load_png('Buttons/level1.png'),
+            'level2': load_png('Buttons/level2.png'),
+            'level3': load_png('Buttons/level3.png'),
+            'level4': load_png('Buttons/level4.png'),
+            'level5': load_png('Buttons/level5.png'),
+            'level6': load_png('Buttons/level6.png'),
+            'level7': load_png('Buttons/level7.png'),
+            'level8': load_png('Buttons/level8.png')
         }
 
         self.clouds = Clouds(self.assets['cloud'], 8)
 
-        self.player = Player(self,(50,50),(32,32))
+        button1 = Button(50,50,"Test","Unlocked",self.assets['level1'])
+
+        self.player = Player(self,(100,50),(32,32))
+
+        self.buttons = [button1]
 
         self.tilemap = Tilemap(self,tile_size=32)
         self.tilemap.load('Entities/save_editor/map.json')
@@ -73,7 +86,8 @@ class Game:
     def run(self):
 
         #Start the level
-        Niveau(game=self,player=self.player,plateformes=False, powersUp=self.powersUp, steps=self.steps, ennemies=self.ennemies,cartes=False, screen=self.screen, scroll=self.scroll, display=self.display, tilemap=self.tilemap, state="Locked")    
+        Partie(self)
+        #Niveau(game=self,player=self.player,plateformes=False, powersUp=self.powersUp, steps=self.steps, ennemies=self.ennemies,cartes=False, screen=self.screen, scroll=self.scroll, display=self.display, tilemap=self.tilemap, state="Locked")
 
 
 if __name__ == "__main__":
