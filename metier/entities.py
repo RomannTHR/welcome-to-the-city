@@ -81,12 +81,20 @@ class Player(PhysicsEntities):
         self.air_time = 0
         self.isOnGround = False
         self.isJumping = False
+
+        #Dashing
         self.isDashingRight  = False
         self.isDashingLeft = False
         self.canDash = True
         self.dashTimer = 0
         self.dashSpeed = 10
+        
+        #Wall Jump
 
+        self.isWallJumping = False
+        self.wallJumping = 1
+
+        #Player Settings
         self.playerSpeed = 0.5
         
 
@@ -97,6 +105,16 @@ class Player(PhysicsEntities):
         if self.collisions['down']:
             self.air_time = 0
             self.canDash = True
+            self.wallJumping = 1
+        
+
+
+        if self.collisions['right'] or self.collisions['left']:
+            if self.wallJumping > 0:
+                self.isWallJumping = True
+                self.wallJumping -= 1
+
+
         if self.air_time > 4:
             self.set_action('jump')
         if self.dashTimer >= 10:
