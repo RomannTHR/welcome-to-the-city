@@ -43,7 +43,6 @@ class PhysicsEntities:
         self.pos[1] += frame_movement[1]
         entity_rect = self.rect()
         for rect in tilemap.physics_rect_around(self.pos):
-            print(rect)
             if entity_rect.colliderect(rect[0]):
                 if frame_movement[1] > 0:
                     is_moving = rect[1]['ismoving']
@@ -82,14 +81,37 @@ class Player(PhysicsEntities):
         self.air_time = 0
         self.isOnGround = False
         self.isJumping = False
+        self.isDashingRight  = False
+        self.isDashingLeft = False
+        self.canDash = True
+        self.dashTimer = 0
+        self.dashSpeed = 10
+
+        self.playerSpeed = 0.5
+        
+
     
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
         self.air_time += 1
         if self.collisions['down']:
             self.air_time = 0
+            self.canDash = True
         if self.air_time > 4:
             self.set_action('jump')
+        if self.dashTimer >= 10:
+            self.isDashingRight = False
+            self.isDashingLeft = False
+            self.velocity[0] = 0
+            self.dashTimer = 0
+        if self.isDashingRight:
+            self.velocity[0] = self.dashSpeed
+            self.dashTimer += 1
+            self.canDash = False
+        if self.isDashingLeft:
+            self.velocity[0] = -self.dashSpeed
+            self.dashTimer += 1
+            self.canDash = False
         elif movement[0] != 0:
             self.set_action('run') 
         else:
