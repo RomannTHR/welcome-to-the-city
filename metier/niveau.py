@@ -80,7 +80,7 @@ class Niveau(pygame.sprite.Sprite):
 
 
             self.tilemap.render(self.display, offset=render_scroll)
-
+            self.tilemap.update_tiles()
             self.player.update(self.tilemap,(self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=render_scroll)
             #print(self.tilemap.physics_rect_around(self.player.pos))
