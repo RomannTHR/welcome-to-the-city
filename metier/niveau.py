@@ -10,8 +10,6 @@ from utils.utils import load_png
 from metier.personnage import Player
 from metier.platerforme import Step
 from config.config import Config
-from metier.projectiles import Projectile
-
 
 
 class Niveau(pygame.sprite.Sprite):
@@ -30,34 +28,12 @@ class Niveau(pygame.sprite.Sprite):
         self.cartes = cartes
         self.cartes_founded = 0
         self.all_sprites = pygame.sprite.Group()
-
+        self.projectiles = []
         self.movement = [False, False]
-
         #self.all_sprites.add(self.player)
-        self.all_sprites.add(self.plateformes)
-        self.all_sprites.add(self.powersUp)
-        self.all_sprites.add(self.ennemies)
-        self.run()
-        self.all_sprites.add(self.cartes)
 
     def update(self):
         pass
-        #self.all_sprites.update()
-        #self.all_sprites.update()
-        #self.player.handle_collision(self.plateformes)
-        #self.player.handle_collision_power(self.powersUp)
-        #self.player.handle_collision_ennemie(self.ennemies)
-        #for projectile in self.player.sended_projectile:
-        #    projectile.handle_collision(self.ennemies)
-        #self.player.sended_projectile.update()
-        #self.all_sprites.update()
-        #self.player.handle_collision(self.plateformes)
-        #self.player.handle_collision_power(self.powersUp)
-        #self.player.handle_collision_ennemie(self.ennemies)
-        #self.cartes_founded += self.player.handle_collision_cartes(self.cartes)
-        #for projectile in self.player.sended_projectile:
-        #   projectile.handle_collision(self.ennemies)
-        #self.player.sended_projectile.update()
     def draw(self):
         self.screen.fill((0, 0, 0))
         self.all_sprites.draw(self.screen)
@@ -83,7 +59,17 @@ class Niveau(pygame.sprite.Sprite):
 
             self.player.update(self.tilemap,(self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=render_scroll)
+
+
             #print(self.tilemap.physics_rect_around(self.player.pos))
+            for enemy in self.game.ennemies:
+                enemy.update(self.tilemap)
+                enemy.render(self.display, offset=render_scroll)
+                for bullet in enemy.sended_Bullet:
+                    bullet.update()
+                    bullet.render(self.display, offset=render_scroll)
+                    if bullet.rect().colliderect(self.player.rect()):
+                        self.player.hurt(enemy.dammages)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

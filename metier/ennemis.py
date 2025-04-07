@@ -16,7 +16,7 @@ class Ennemies(pygame.sprite.Sprite):
 
     def __init__(self, x,y,start,end,life=10,dammages=10):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = load_png("Ennemies/asmerde.png")
+        self.image, self.rect = load_png("Personnages/Idle/000.png")
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
         self.speed = 2
