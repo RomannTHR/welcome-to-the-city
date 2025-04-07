@@ -47,7 +47,11 @@ class PhysicsEntities:
                 if frame_movement[1] > 0:
                     is_moving = rect[1]['ismoving']
                     if is_moving and self.isOnGround:
-                        self.pos = [self.pos[0] + (rect[1]['next_pos_increment'] * 32//10) , self.pos[1]]
+                        direction = rect[1]['direction']
+                        if direction == 'x':
+                            self.pos = [self.pos[0] + (rect[1]['next_pos_increment'] * 32//10) , self.pos[1]]
+                        if direction == 'y':
+                            self.pos = [self.pos[0] , self.pos[1]]
                     self.isOnGround = True
                     self.isJumping = False
                     entity_rect.bottom = rect[0].top
