@@ -74,9 +74,9 @@ class PhysicsEntities:
 
         if self.collisions['down'] or self.collisions['up']:
             self.velocity[1] = 0
-        
-        self.animation.update()
 
+        self.animation.update()
+        self.checkLowPosition()
     def render(self, surf, offset=(0,0)):
         #surf.blit(self.game.assets['player'], (self.pos[0] - offset[0], self.pos[1] - offset[1]))
         surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1]))
@@ -92,6 +92,9 @@ class PhysicsEntities:
         self.life+=5
         self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
         self.set_action('idle')
+    def checkLowPosition(self):
+        if self.pos[1]>=640:
+            self.pos = [100,50]
 class  Enemy(PhysicsEntities):
     def __init__(self,game,pos,size,start,end):
         self.image, self.bullet_rect = load_png("Bullets/bullet.png")
