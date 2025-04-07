@@ -11,7 +11,9 @@ class Tilemap:
         self.tile_size = tile_size
         self.tilemap = {}
         self.offgrid_tiles = []
-
+        for i in range(10):
+            self.tilemap[str(i + 3) + ';10'] = {'type': 'grass', 'variant': 1, 'pos': (i + 3, 10)}
+            self.tilemap['10;' + str(i + 5)] = {'type': 'stone', 'variant': 1, 'pos': (10, i + 5)}
 
     def tiles_around(self, pos):
         tiles = []
@@ -35,7 +37,13 @@ class Tilemap:
             tile = tile[key]
             print(tile['pos'])
         return rects
-    
+
+    def solid_check(self, pos):
+        tile_loc = str(int(pos[0] // self.tile_size)) + ';' + str(int(pos[1] // self.tile_size))
+        if tile_loc in self.tilemap:
+            if self.tilemap[tile_loc]['type'] in PHYSICS_TILES:
+                return self.tilemap[tile_loc]
+
     def save(self, path):
         f = open(path, 'w')
         json.dump({'tilemap': self.tilemap, 'tile_size': self.tile_size, 'offgrid' : self.offgrid_tiles}, f)
