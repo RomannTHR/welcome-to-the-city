@@ -20,11 +20,12 @@ class Game:
         self.assets = {
             'background' : load_png('Background/4.png'),
             'cloud' : load_png('Background/cloud.png')[0],
-            'grass' : load_images('Titles/Grass'),
-            'stone': load_images('Titles/Stone'),
-            'ice': load_images('Titles/Ice'),
-            'purplegrass': load_images('Titles/PurpleGrass'),
-            'decor' : load_images('Titles/Decor'),
+            'grass' : load_images('Tiles/Grass'),
+            'stone': load_images('Tiles/Stone'),
+            'ice': load_images('Tiles/Ice'),
+            'purplegrass': load_images('Tiles/PurpleGrass'),
+            'decor' : load_images('Tiles/Decor'),
+            'plateforme' : load_images('Tiles/Plateformes'),
             'player/idle' : Animation(load_images('Personnages/Idle'), img_dur=6),
             'player/run' : Animation(load_images('Personnages/Run'), img_dur=4),
             'player/jump' : Animation(load_images('Personnages/Idle'), img_dur=6),
@@ -39,6 +40,7 @@ class Game:
             'level7': load_png('Buttons/level7.png'),
             'level8': load_png('Buttons/level8.png'),
             'bullet': load_png('Bullets/bullet.png')
+
         }
 
         self.clouds = Clouds(self.assets['cloud'], 8)
@@ -47,7 +49,7 @@ class Game:
         self.ennemies.append(Enemy(self,(215,300),(32,32),200,300))
 
         self.tilemap = Tilemap(self,tile_size=32)
-
+        self.tilemap.load('Entities/save_editor/map.json')
         self.scroll = [0,0]
         level1 = Niveau(game=self, player=self.player, plateformes=False, powersUp=False, steps=False,
                         ennemies=self.ennemies, cartes=False, screen=self.screen, scroll=self.scroll,

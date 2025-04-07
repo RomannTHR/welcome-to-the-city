@@ -33,12 +33,12 @@ class PhysicsEntities:
 
         entity_rect = self.rect()
         for rect in tilemap.physics_rect_around(self.pos):
-            if entity_rect.colliderect(rect):
+            if entity_rect.colliderect(rect[0]):
                 if frame_movement[0] > 0:
-                    entity_rect.right = rect.left
+                    entity_rect.right = rect[0].left
                     self.collisions['right'] = True
                 if frame_movement[0] < 0:
-                    entity_rect.left = rect.right
+                    entity_rect.left = rect[0].right
                     self.collisions['left'] = True
                 self.pos[0] = entity_rect.x
 
@@ -46,14 +46,21 @@ class PhysicsEntities:
         self.pos[1] += frame_movement[1]
         entity_rect = self.rect()
         for rect in tilemap.physics_rect_around(self.pos):
-            if entity_rect.colliderect(rect):
+            if entity_rect.colliderect(rect[0]):
                 if frame_movement[1] > 0:
+                    is_moving = rect[1]['ismoving']
+                    if is_moving and self.isOnGround:
+                        direction = rect[1]['direction']
+                        if direction == 'x':
+                            self.pos = [self.pos[0] + (rect[1]['next_pos_increment'] * 32//10) , self.pos[1]]
+                        if direction == 'y':
+                            self.pos = [self.pos[0] , self.pos[1]]
                     self.isOnGround = True
                     self.isJumping = False
-                    entity_rect.bottom = rect.top
+                    entity_rect.bottom = rect[0].top
                     self.collisions['down'] = True
                 if frame_movement[1] < 0:
-                    entity_rect.top = rect.bottom
+                    entity_rect.top = rect[0].bottom
                     self.collisions['up'] = True
                 self.pos[1] = entity_rect.y
 
@@ -129,14 +136,55 @@ class Player(PhysicsEntities):
         self.air_time = 0
         self.isOnGround = False
         self.isJumping = False
+
+        #Dashing
+        self.isDashingRight  = False
+        self.isDashingLeft = False
+        self.canDash = True
+        self.dashTimer = 0
+        self.dashSpeed = 10
+        
+        #Wall Jump
+
+        self.isWallJumping = False
+        self.wallJumping = 1
+
+        #Player Settings
+        self.playerSpeed = 0.5
+        
+
     
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
         self.air_time += 1
         if self.collisions['down']:
             self.air_time = 0
+            self.canDash = True
+            self.wallJumping = 1
+        
+
+
+        if self.collisions['right'] or self.collisions['left']:
+            if self.wallJumping > 0:
+                self.isWallJumping = True
+                self.wallJumping -= 1
+
+
         if self.air_time > 4:
             self.set_action('jump')
+        if self.dashTimer >= 10:
+            self.isDashingRight = False
+            self.isDashingLeft = False
+            self.velocity[0] = 0
+            self.dashTimer = 0
+        if self.isDashingRight:
+            self.velocity[0] = self.dashSpeed
+            self.dashTimer += 1
+            self.canDash = False
+        if self.isDashingLeft:
+            self.velocity[0] = -self.dashSpeed
+            self.dashTimer += 1
+            self.canDash = False
         elif movement[0] != 0:
             self.set_action('run') 
         else:
