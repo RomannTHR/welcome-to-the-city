@@ -28,18 +28,18 @@ class Game:
         
 
         self.assets = {
-            'grass' : load_images('Titles/Grass'),
-            'stone': load_images('Titles/Stone'),
-            'ice': load_images('Titles/Ice'),
-            'purplegrass': load_images('Titles/PurpleGrass'),
-            'decor' : load_images('Titles/Decor'),
-            'platerforme' : load_images('Titles/Plateformes')
+            'grass' : load_images('Tiles/Grass'),
+            'stone': load_images('Tiles/Stone'),
+            'ice': load_images('Tiles/Ice'),
+            'purplegrass': load_images('Tiles/PurpleGrass'),
+            'decor' : load_images('Tiles/Decor'),
+            'plateforme' : load_images('Tiles/Plateformes')
         }
 
-        print(self.assets['grass'])
+        
 
         self.tilemap = Tilemap(self,tile_size=32)
-
+        self.tilemap.load("Entities/save_editor/map.json")
         self.scroll = [0,0]
 
         self.tile_list = list(self.assets)
@@ -51,10 +51,8 @@ class Game:
         self.right_clicking = False
         self.shift = False
         self.ongrid = True
+        self.moving_tile = False
     #Niveau 2 
-
-
-
     
 
     def run(self):
@@ -73,20 +71,29 @@ class Game:
             current_tile_img.set_alpha(100)
             self.tilemap.render(self.display, offset=render_scroll)
             self.display.blit(current_tile_img, (5,5))
-
+            
 
             mouse_position = pygame.mouse.get_pos()
 
             mouse_position = (mouse_position[0] / RENDER_SCALE, mouse_position[1] / RENDER_SCALE)
             tile_pos = (int(mouse_position[0] + self.scroll[0]) // self.tilemap.tile_size, int(mouse_position[1] + self.scroll[1]) // self.tilemap.tile_size)
 
+            font = pygame.font.SysFont("Arial", 16)
+            text = font.render(str(tile_pos[0]) + ';' + str(tile_pos[1]), True, (255, 255, 255))
+            self.display.blit(text, (0, 50))
+
+
             if self.ongrid: 
                 self.display.blit(current_tile_img, (int(tile_pos[0] * self.tilemap.tile_size - self.scroll[0]) ,int(tile_pos[1] * self.tilemap.tile_size - self.scroll[1])))
             else:
                 self.display.blit(current_tile_img, (int(mouse_position[0]  - self.scroll[0]) ,int(mouse_position[1] - self.scroll[1])))
 
-            if self.clicking and self.ongrid:
+            if self.clicking and self.ongrid and not self.moving_tile:
                 self.tilemap.tilemap[str(tile_pos[0]) + ';' + str(tile_pos[1])] =  {'type': self.tile_list[self.current_tile_group], 'variant': self.current_tile_variant, 'pos': (tile_pos[0], tile_pos[1])}
+            
+            if self.clicking and self.ongrid and self.moving_tile:
+                self.tilemap.moving_tiles.append({'type': self.tile_list[self.current_tile_group], 'variant': self.current_tile_variant, 'pos': (tile_pos[0], tile_pos[1]), 'initial_pos' :  (tile_pos[0], tile_pos[1]), 'direction' : 'x','next_pos_increment' : 1, 'frame_counter':0, 'move_delay': 10})
+
 
             if self.right_clicking:
                 tile_loc = str(tile_pos[0]) + ';' + str(tile_pos[1])
@@ -97,6 +104,11 @@ class Game:
                     tile_rect = pygame.Rect(tile['pos'][0] - self.scroll[0], tile['pos'][1] - self.scroll[1], tile_img.get_width(), tile_img.get_height())
                     if tile_rect.collidepoint(mouse_position):
                         self.tilemap.offgrid_tiles.remove(tile)
+                for tile in self.tilemap.moving_tiles.copy():
+                    tile_img = self.assets[tile['type']][tile['variant']]
+                    tile_rect = pygame.Rect((tile['pos'][0] * tile_img.get_width()) - self.scroll[0], (tile['pos'][1] * tile_img.get_width()) - self.scroll[1], tile_img.get_width(), tile_img.get_height())
+                    if tile_rect.collidepoint(mouse_position):
+                        self.tilemap.moving_tiles.remove(tile)
             
             
 
@@ -137,8 +149,12 @@ class Game:
                         self.movement[2] = True
                     if event.key == pygame.K_g:
                         self.ongrid = not self.ongrid
+                    if event.key == pygame.K_m:
+                        self.moving_tile = not self.moving_tile
                     if event.key == pygame.K_o:
                         self.tilemap.save('Entities/save_editor/map.json')
+                    if event.key == pygame.K_t:
+                        self.tilemap.autotile()
                     if event.key == pygame.K_LSHIFT:
                         self.current_tile_variant = 0
                         self.shift = not self.shift 

@@ -56,7 +56,7 @@ class Niveau(pygame.sprite.Sprite):
 
 
             self.tilemap.render(self.display, offset=render_scroll)
-
+            self.tilemap.update_tiles()
             self.player.update(self.tilemap,(self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=render_scroll)
 
@@ -77,12 +77,19 @@ class Niveau(pygame.sprite.Sprite):
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
-                        self.movement[0] = True
+                        self.movement[0] = True + self.player.playerSpeed
                     if event.key == pygame.K_RIGHT:
-                        self.movement[1] = True
+                        self.movement[1] = True + self.player.playerSpeed
+                    if event.key == pygame.K_SPACE and self.player.canDash and self.movement[0] > 0:
+                            self.player.isDashingLeft = True
+                    if event.key == pygame.K_SPACE and self.player.canDash and self.movement[1] > 0:
+                            self.player.isDashingRight = True                  
                     if event.key == pygame.K_UP and self.player.isJumping == False:
                         self.player.velocity[1] = -3
                         self.player.isJumping = True
+                    if event.key == pygame.K_UP and self.player.isWallJumping:
+                        self.player.velocity[1] = -3.5
+                        self.player.isWallJumping -= 1
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
                         self.movement[0] = False
