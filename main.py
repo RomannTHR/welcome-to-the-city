@@ -1,24 +1,13 @@
-import sys
-import random
-import math
-import os
-import getopt
 import pygame
-from socket import *
 from pygame.locals import *
 from metier.tilemap import Tilemap
 from utils.utils import Animation, load_png, load_images, load_image
-#from metier.personnage import Player
 from metier.partie import Partie
-from metier.niveau import Niveau
-from metier.platerforme import Step
-from metier.powerUp import PowerUp
-from metier.ennemis import Ennemies
-from metier.entities import PhysicsEntities, Player
-from metier.clouds import Cloud, Clouds
-from Entities.boutton import Button
-from config.config import Config
 
+from metier.entities import PhysicsEntities, Player,Enemy
+from metier.clouds import Cloud, Clouds
+from config.config import Config
+from metier.niveau import Niveau
 
 class Game:
     def __init__(self):
@@ -27,9 +16,7 @@ class Game:
 
         self.screen = pygame.display.set_mode((Config.screen_width, Config.screen_height))
         self.display = pygame.Surface((Config.env_width, Config.env_height))
-        
-        
-
+        self.ennemies = []
         self.assets = {
             'background' : load_png('Background/4.png'),
             'cloud' : load_png('Background/cloud.png')[0],
@@ -43,6 +30,8 @@ class Game:
             'player/idle' : Animation(load_images('Personnages/Idle'), img_dur=6),
             'player/run' : Animation(load_images('Personnages/Run'), img_dur=4),
             'player/jump' : Animation(load_images('Personnages/Idle'), img_dur=6),
+            'enemy/idle' : Animation(load_images('Ennemies/Idle'), img_dur=15),
+            'enemy/run' : Animation(load_images('Ennemies/Run'), img_dur=7),
             'level1': load_png('Buttons/level1.png'),
             'level2': load_png('Buttons/level2.png'),
             'level3': load_png('Buttons/level3.png'),
@@ -51,33 +40,24 @@ class Game:
             'level6': load_png('Buttons/level6.png'),
             'level7': load_png('Buttons/level7.png'),
             'level8': load_png('Buttons/level8.png'),
+            'bullet': load_png('Bullets/bullet.png')
+
         }
 
         self.clouds = Clouds(self.assets['cloud'], 8)
 
-        button1 = Button(50,50,"Test","Unlocked",self.assets['level1'])
-
         self.player = Player(self,(100,50),(32,32))
-
-        self.buttons = [button1]
+        self.ennemies.append(Enemy(self,(215,300),(32,32),200,300))
 
         self.tilemap = Tilemap(self,tile_size=32)
         self.tilemap.load('Entities/save_editor/map.json')
         self.scroll = [0,0]
+        level1 = Niveau(game=self, player=self.player, plateformes=False, powersUp=False, steps=False,
+                        ennemies=self.ennemies, cartes=False, screen=self.screen, scroll=self.scroll,
+                        display=self.display, tilemap=self.tilemap, state="Locked")
 
-        powerUp1 = PowerUp(500,800,"powerUp/powerUp.jpg","Life")
-        powerUp2 = PowerUp(900, 800, "powerUp/powerUp.jpg","Life")
-        step1 = Step(500, 550, "Objects/plateforme.jpg",0,750,"hor",5)
-        ennemie1 = Ennemies(800,750,400,1200)
-
-        self.steps = pygame.sprite.Group()
-        self.powersUp = pygame.sprite.Group()
-        self.ennemies = pygame.sprite.Group()
-
-        self.powersUp.add(powerUp1,powerUp2)
-        self.steps.add(step1)
-        self.ennemies.add(ennemie1)
-
+        self.currentLevel = level1
+        self.initialPosition = [100,50]
 
     #Niveau 2 
 
