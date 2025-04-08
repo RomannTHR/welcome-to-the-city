@@ -32,6 +32,8 @@ class PhysicsEntities:
         self.pos[0] += frame_movement[0] 
 
         entity_rect = self.rect()
+
+        #Manage collisions with physics entities
         for rect in tilemap.physics_rect_around(self.pos):
             if entity_rect.colliderect(rect[0]):
                 if frame_movement[0] > 0:
@@ -41,7 +43,6 @@ class PhysicsEntities:
                     entity_rect.left = rect[0].right
                     self.collisions['left'] = True
                 self.pos[0] = entity_rect.x
-
 
         self.pos[1] += frame_movement[1]
         entity_rect = self.rect()
@@ -53,8 +54,6 @@ class PhysicsEntities:
                         direction = rect[1]['direction']
                         if direction == 'x':
                             self.pos = [self.pos[0] + (rect[1]['next_pos_increment'] * 32//10) , self.pos[1]]
-                        if direction == 'y':
-                            self.pos = [self.pos[0] , self.pos[1]]
                     self.isOnGround = True
                     self.isJumping = False
                     entity_rect.bottom = rect[0].top
@@ -63,6 +62,7 @@ class PhysicsEntities:
                     entity_rect.top = rect[0].bottom
                     self.collisions['up'] = True
                 self.pos[1] = entity_rect.y
+
 
         if movement[0] > 0:
             self.flip = False
@@ -145,6 +145,11 @@ class Player(PhysicsEntities):
 
         #Player Settings
         self.playerSpeed = 0.5
+
+        #Achivements
+
+        self.map_number = 0
+
         
         #PowerUp
         self.isShielded = False
@@ -189,6 +194,7 @@ class Player(PhysicsEntities):
             self.set_action('run') 
         else:
             self.set_action('idle')
+
     def checkLowPosition(self):
         if self.pos[1]>=640:
             self.explode()
@@ -202,3 +208,12 @@ class Player(PhysicsEntities):
         self.set_action('idle')
     def attack(self):
         return self.dammages
+
+
+        #Manage collisions with Items entities
+        for rect in tilemap.items_rects_around(self.pos):
+            if self.rect().colliderect(rect[0]):
+                if rect[1]['item_name'] == 'cartes':
+                    self.map_number += 1
+                    del tilemap.tilemap[str(rect[1]['data']['pos'][0]) + ';' + str(rect[1]['data']['pos'][1])]
+

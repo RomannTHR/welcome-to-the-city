@@ -33,9 +33,9 @@ class Game:
             'ice': load_images('Tiles/Ice'),
             'purplegrass': load_images('Tiles/PurpleGrass'),
             'decor' : load_images('Tiles/Decor'),
-            'plateforme' : load_images('Tiles/Plateformes')
+            'plateforme' : load_images('Tiles/Plateformes'),
+            'items/cartes' : load_images('Items/Cartes')
         }
-
         
 
         self.tilemap = Tilemap(self,tile_size=32)
@@ -168,10 +168,7 @@ class Game:
                     if event.key == pygame.K_DOWN:
                         self.movement[2] = False
                     
-                    
-
                    
-
             self.screen.blit(pygame.transform.scale(self.display,self.screen.get_size()), (0,0))
             pygame.display.update()  
             clock.tick(60)  
