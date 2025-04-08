@@ -16,6 +16,7 @@ class PhysicsEntities:
         self.flip = False
         self.set_action('idle')
         self.life = 5
+        self.just_jumped_from_jumper = False
 
 
     def rect(self):
@@ -54,6 +55,9 @@ class PhysicsEntities:
                         direction = rect[1]['direction']
                         if direction == 'x':
                             self.pos = [self.pos[0] + (rect[1]['next_pos_increment'] * 32//10) , self.pos[1]]
+                    if rect[1]['data']['type'] == 'jumper':
+                        self.velocity[1] = -15
+                        self.just_jumped_from_jumper = True
                     self.isOnGround = True
                     self.isJumping = False
                     entity_rect.bottom = rect[0].top
@@ -69,12 +73,13 @@ class PhysicsEntities:
         if movement[0] < 0:
             self.flip = True
 
+        if not self.just_jumped_from_jumper:
+            self.velocity[1] = min(5, self.velocity[1] + 0.1)
 
-        self.velocity[1] = min(5, self.velocity[1] + 0.1)
-
-        if self.collisions['down'] or self.collisions['up']:
+        if (self.collisions['down'] or self.collisions['up']) and not self.just_jumped_from_jumper:
             self.velocity[1] = 0
-        
+
+        self.just_jumped_from_jumper = False
         self.animation.update()
 
     def render(self, surf, offset=(0,0)):
@@ -92,6 +97,7 @@ class PhysicsEntities:
         self.life+=5
         self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
         self.set_action('idle')
+
 class  Enemy(PhysicsEntities):
     def __init__(self,game,pos,size,start,end):
         self.image, self.bullet_rect = load_png("Bullets/bullet.png")
@@ -106,6 +112,7 @@ class  Enemy(PhysicsEntities):
         self.direction = -1
         self.sended_Bullet = []
         self.can_fire = 0
+        
     def update(self, tilemap, movement=(0, 0)):
         self.pos[0] += self.direction*self.speed
         self.can_fire-=1
