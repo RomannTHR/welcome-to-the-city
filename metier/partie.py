@@ -40,14 +40,14 @@ class Partie(pygame.sprite.Sprite):
             pygame.display.flip()
 
             buttons = []
-            button1=Button(20,30,"caca","Unlocked",self.game.assets['level1'])
-            button2=Button(150, 50,"caca","Locked",self.game.assets['level2'])
-            button3=Button(300, 25,"caca","Locked",self.game.assets['level3'])
-            button4=Button(450, 250,"caca","Locked",self.game.assets['level4'])
-            button5=Button(50, 350,"caca","Locked",self.game.assets['level5'])
-            button6=Button(170, 370,"caca","Locked",self.game.assets['level6'])
-            button7=Button(290, 400,"caca","Locked",self.game.assets['level7'])
-            button8=Button(450, 400,"caca","Locked",self.game.assets['level8'])
+            button1=Button(20,30,"","Unlocked",self.game.assets['level1'])
+            button2=Button(150, 50,"","Locked",self.game.assets['level2'])
+            button3=Button(300, 25,"","Locked",self.game.assets['level3'])
+            button4=Button(450, 250,"","Locked",self.game.assets['level4'])
+            button5=Button(50, 350,"","Locked",self.game.assets['level5'])
+            button6=Button(170, 370,"","Locked",self.game.assets['level6'])
+            button7=Button(290, 400,"","Locked",self.game.assets['level7'])
+            button8=Button(450, 400,"","Locked",self.game.assets['level8'])
             buttons.extend([button1,button2,button3,button4,button5,button6,button7,button8])
 
             for button in buttons:

@@ -25,7 +25,7 @@ class Tilemap:
                 tiles.append(self.tilemap[check_loc])
             for tile in self.moving_tiles:
                 check_loc = (tile_loc[0] + offset[0], tile_loc[1] + offset[1])
-                tile_x = int(tile['pos'][0]) 
+                tile_x = int(tile['pos'][0])
                 tile_y = int(tile['pos'][1])
                 if (tile_x, tile_y) == check_loc:
                     tiles.append(tile)
@@ -59,7 +59,13 @@ class Tilemap:
             tile = tile[key]
             print(tile['pos'])
         return rects
-    
+
+    def solid_check(self, pos):
+        tile_loc = str(int(pos[0] // self.tile_size)) + ';' + str(int(pos[1] // self.tile_size))
+        if tile_loc in self.tilemap:
+            if self.tilemap[tile_loc]['type'] in PHYSICS_TILES:
+                return self.tilemap[tile_loc]
+
     def save(self, path):
         f = open(path, 'w')
         json.dump({'tilemap': self.tilemap, 'tile_size': self.tile_size, 'offgrid' : self.offgrid_tiles, 'moving_tiles' : self.moving_tiles}, f)
@@ -70,7 +76,7 @@ class Tilemap:
         f = open(path, 'r')
         data = json.load(f)
         f.close()
-        
+
         self.tilemap = data['tilemap']
         self.tilemap_size = data['tile_size']
         self.offgrid_tiles = data['offgrid']
@@ -81,14 +87,14 @@ class Tilemap:
             tile['frame_counter'] += 1
 
             if tile['frame_counter'] < tile.get('move_delay', 10):
-                continue 
+                continue
 
-            tile['frame_counter'] = 0  
+            tile['frame_counter'] = 0
             initial_x, initial_y = tile['initial_pos']
             current_x, current_y = tile['pos']
             increment = tile['next_pos_increment']
             direction = tile.get('direction', 'x')
-            range_limit = tile.get('range', 5) 
+            range_limit = tile.get('range', 5)
             if direction == 'x':
 
                 delta = current_x - initial_x
@@ -96,7 +102,7 @@ class Tilemap:
                 if abs(delta + increment) > range_limit:
                     tile['next_pos_increment'] *= -1
                     increment = tile['next_pos_increment']
-                    
+
                 tile['pos'] = (current_x + increment, current_y)
 
             elif direction == 'y':

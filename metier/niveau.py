@@ -4,12 +4,7 @@ import math
 import os
 import getopt
 import pygame
-from socket import *
-from pygame import *
-from utils.utils import load_png
-from metier.personnage import Player
-from metier.platerforme import Step
-from config.config import Config
+from Entities.boutton import Button
 
 
 class Niveau(pygame.sprite.Sprite):
@@ -30,6 +25,7 @@ class Niveau(pygame.sprite.Sprite):
         self.all_sprites = pygame.sprite.Group()
         self.projectiles = []
         self.movement = [False, False]
+        self.home_button = Button(20,30,"","Unlocked",self.game.assets['home_button'])
         #self.all_sprites.add(self.player)
 
     def update(self):
@@ -45,6 +41,7 @@ class Niveau(pygame.sprite.Sprite):
         running = True
         while running:
             self.display.blit(self.game.assets['background'][0], (0,0))
+            self.home_button.draw(self.game)
 
             self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
             self.scroll[1] += (self.player.rect().centery - self.display.get_width() / 2 - self.scroll[1]) / 30
@@ -65,7 +62,18 @@ class Niveau(pygame.sprite.Sprite):
             self.display.blit(self.game.assets['items/cartes'][2], (0, 50))
             text = font.render(':' + str(self.player.map_number), True, (0, 0, 0))
             self.display.blit(text, (32, 50 + 32/4))
+            
             #print(self.tilemap.physics_rect_around(self.player.pos))
+            for powerUp in self.game.powerUp:
+                powerUp.update()
+                powerUp.render(self.display,offset=render_scroll)
+                if powerUp.rect.colliderect(self.player) and not powerUp.isFound:
+                    powerUp.changeStateOpen()
+                    powerUp.isFound = True
+                    if powerUp.type ==  "Shield" and not self.player.isShielded:
+                        self.player.life += 5
+                    elif powerUp.type == "Jump" :
+                        self.player.jumpPower -=2
             for enemy in self.game.ennemies:
                 enemy.update(self.tilemap)
                 enemy.render(self.display, offset=render_scroll)
@@ -74,11 +82,23 @@ class Niveau(pygame.sprite.Sprite):
                     bullet.render(self.display, offset=render_scroll)
                     if bullet.rect().colliderect(self.player.rect()):
                         self.player.hurt(enemy.dammages)
+                    tilesAround = self.game.tilemap.physics_rect_around(bullet.pos)
+                    for tile in tilesAround:
+                        if bullet.rect().colliderect(tile[0]):
+                            if bullet in enemy.sended_Bullet:
+                                enemy.sended_Bullet.remove(bullet)
+
+
+
+
+
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                if self.home_button.handle_event(event):
+                    running = False
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
                         self.movement[0] = True + self.player.playerSpeed
@@ -89,11 +109,20 @@ class Niveau(pygame.sprite.Sprite):
                     if event.key == pygame.K_SPACE and self.player.canDash and self.movement[1] > 0:
                             self.player.isDashingRight = True                  
                     if event.key == pygame.K_UP and self.player.isJumping == False:
-                        self.player.velocity[1] = -3
+                        self.player.velocity[1] = self.player.jumpPower
                         self.player.isJumping = True
                     if event.key == pygame.K_UP and self.player.isWallJumping:
-                        self.player.velocity[1] = -3.5
+                        self.player.velocity[1] = self.player.jumpPower
                         self.player.isWallJumping -= 1
+                    if event.key == pygame.K_g:
+                        self.player.set_action('run')
+                        for enemy in self.ennemies:
+                            distance_x = abs(self.player.pos[0] - enemy.pos[0])
+                            distance_y = abs(self.player.pos[1] - enemy.pos[1])
+                            if distance_x < 30 and distance_y < 10:
+                                enemy.hurt(self.player.dammages)
+                                self.ennemies.remove(enemy)
+
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
                         self.movement[0] = False
@@ -108,5 +137,4 @@ class Niveau(pygame.sprite.Sprite):
 
             self.screen.blit(pygame.transform.scale(self.display,self.screen.get_size()), (0,0))
             pygame.display.update()  
-            clock.tick(60)  
-        pygame.quit()
+            clock.tick(60)
