@@ -8,6 +8,7 @@ from metier.entities import PhysicsEntities, Player,Enemy
 from metier.clouds import Cloud, Clouds
 from config.config import Config
 from metier.niveau import Niveau
+from metier.powerUp import PowerUp
 
 class Game:
     def __init__(self):
@@ -17,6 +18,7 @@ class Game:
         self.screen = pygame.display.set_mode((Config.screen_width, Config.screen_height))
         self.display = pygame.Surface((Config.env_width, Config.env_height))
         self.ennemies = []
+        self.powerUp = []
         self.assets = {
             'background' : load_png('Background/4.png'),
             'cloud' : load_png('Background/cloud.png')[0],
@@ -39,19 +41,21 @@ class Game:
             'level6': load_png('Buttons/level6.png'),
             'level7': load_png('Buttons/level7.png'),
             'level8': load_png('Buttons/level8.png'),
+            'home_button': load_png('Buttons/home.png'),
             'bullet': load_png('Bullets/bullet.png')
+
 
         }
 
         self.clouds = Clouds(self.assets['cloud'], 8)
 
-        self.player = Player(self,(100,50),(32,32))
-        self.ennemies.append(Enemy(self,(215,300),(32,32),200,300))
-
+        self.player = Player(self,(100,100),(32,32))
+        self.ennemies.append(Enemy(self,(215,300),(32,32),200,450))
+        self.powerUp.append(PowerUp(100,125,"powerUp/coffre_ferme.png", "Jump"))
         self.tilemap = Tilemap(self,tile_size=32)
         self.tilemap.load('Entities/save_editor/map.json')
         self.scroll = [0,0]
-        level1 = Niveau(game=self, player=self.player, plateformes=False, powersUp=False, steps=False,
+        level1 = Niveau(game=self, player=self.player, plateformes=False, powersUp=self.powerUp, steps=False,
                         ennemies=self.ennemies, cartes=False, screen=self.screen, scroll=self.scroll,
                         display=self.display, tilemap=self.tilemap, state="Locked")
 
