@@ -41,7 +41,6 @@ class Niveau(pygame.sprite.Sprite):
         running = True
         while running:
             self.display.blit(self.game.assets['background'][0], (0,0))
-            self.home_button.draw(self.game)
 
             self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
             self.scroll[1] += (self.player.rect().centery - self.display.get_width() / 2 - self.scroll[1]) / 30
@@ -50,7 +49,7 @@ class Niveau(pygame.sprite.Sprite):
 
             self.game.clouds.update()
             self.game.clouds.render(self.display, offset=render_scroll)
-
+            self.home_button.draw(self.game)
 
             self.tilemap.render(self.display, offset=render_scroll)
             self.tilemap.update_tiles()
