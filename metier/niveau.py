@@ -46,7 +46,7 @@ class Niveau(pygame.sprite.Sprite):
             self.scroll[1] += (self.player.rect().centery - self.display.get_width() / 2 - self.scroll[1]) / 30
 
             render_scroll = (int(self.scroll[0]),int(self.scroll[1]))
-
+            
             self.game.clouds.update()
             self.game.clouds.render(self.display, offset=render_scroll)
             self.home_button.draw(self.game)
@@ -56,6 +56,12 @@ class Niveau(pygame.sprite.Sprite):
             self.player.update(self.tilemap,(self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=render_scroll)
 
+
+            font = pygame.font.SysFont("Arial", 16)
+            self.display.blit(self.game.assets['items/cartes'][2], (0, 50))
+            text = font.render(':' + str(self.player.map_number), True, (0, 0, 0))
+            self.display.blit(text, (32, 50 + 32/4))
+            
             #print(self.tilemap.physics_rect_around(self.player.pos))
             for powerUp in self.game.powerUp:
                 powerUp.update()

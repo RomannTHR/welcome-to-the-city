@@ -3,8 +3,8 @@ import pygame
 
 
 NEIGHTBOR_OFFSETS = [(1,0), (1,1), (1,-1), (0,1), (0,-1), (0,0), (-1,1), (-1,-1), (-1,0)] #Utile pour détecter toutes les potentielles entitées autour de notre entité 
-PHYSICS_TILES = {'grass','stone', 'plateforme'}
-
+PHYSICS_TILES = {'grass','stone', 'plateforme', 'ice', 'purplegrass'}
+ITEMS_TILES = {'cartes'}
 
 class Tilemap:
     def __init__(self, game, tile_size=16):
@@ -34,7 +34,6 @@ class Tilemap:
     def physics_rect_around(self, pos):
         rects = []
         for tile in self.tiles_around(pos):
-            #print(tile)
             if tile['type'] in PHYSICS_TILES:
                 if 'move_delay' in tile:
                     rects.append((pygame.Rect(tile['pos'][0] * self.tile_size,tile['pos'][1] * self.tile_size,self.tile_size,self.tile_size), {'ismoving':True, 'next_pos_increment': tile['next_pos_increment'], 'direction': tile['direction']}))
@@ -42,6 +41,18 @@ class Tilemap:
                     rects.append((pygame.Rect(tile['pos'][0] * self.tile_size,tile['pos'][1] * self.tile_size,self.tile_size,self.tile_size), {'ismoving':False}))
         return rects
     
+    def items_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            str_type = tile['type'].split('/')
+            tile_type = str_type[0]
+            if tile_type == 'items':
+                item_name = str_type[1]
+                if item_name in ITEMS_TILES:
+                    rects.append((pygame.Rect(tile['pos'][0] * self.tile_size,tile['pos'][1] * self.tile_size,self.tile_size,self.tile_size), {'item_name' : item_name, 'data':tile}))
+        return rects
+
+
     def all_physics_rect(self):
         rects = []
         for key in self.tilemap:
