@@ -16,6 +16,8 @@ class PhysicsEntities:
         self.flip = False
         self.set_action('idle')
         self.life = 5
+        self.attack_timer = 0
+        self.is_attacking = False
 
 
     def rect(self):
@@ -159,6 +161,15 @@ class Player(PhysicsEntities):
         super().update(tilemap, movement=movement)
         self.checkLowPosition()
         self.air_time += 1
+        if self.is_attacking:
+            self.attack_timer -= 1
+            if self.attack_timer <= 0:
+                self.is_attacking = False
+            else:
+                self.set_action('run')
+                super().update(tilemap, movement=(0, 0))
+                return
+
         if self.collisions['down']:
             self.air_time = 0
             self.canDash = True

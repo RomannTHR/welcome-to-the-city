@@ -114,7 +114,11 @@ class Niveau(pygame.sprite.Sprite):
                         self.player.velocity[1] = self.player.jumpPower
                         self.player.isWallJumping -= 1
                     if event.key == pygame.K_g:
-                        self.player.set_action('run')
+                        if not self.player.is_attacking:
+                            self.player.set_action('run')
+                            self.player.is_attacking = True
+                            print("mama")
+                            self.player.attack_timer = int(0.5 * 60)
                         for enemy in self.ennemies:
                             distance_x = abs(self.player.pos[0] - enemy.pos[0])
                             distance_y = abs(self.player.pos[1] - enemy.pos[1])
