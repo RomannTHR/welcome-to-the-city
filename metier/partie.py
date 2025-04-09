@@ -8,13 +8,11 @@ try:
     from socket import *
     from pygame.locals import *
     from utils.utils import load_png
-    from metier.personnage import Player
     from metier.niveau import Niveau
-    from metier.platerforme import Step
     from metier.powerUp import PowerUp
-    from metier.ennemis import Ennemies
     from config.config import Config
     from Entities.boutton import Button
+    import copy
 except ImportError as err:
     print(f"couldn't load module. {err}")
     sys.exit(2)
@@ -26,17 +24,13 @@ class Partie(pygame.sprite.Sprite):
         self.game = game
         self.running = True
         self.draw()
+
     def draw(self):
         while self.running:
             self.game.display.blit(self.game.assets['background'][0], (0,0))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        Niveau(game=self.game, player=self.game.player, plateformes=False, powersUp=self.game.powersUp, steps=self.game.steps,
-                           ennemies=self.game.ennemies, cartes=False, screen=self.game.screen, scroll=self.game.scroll,
-                           display=self.game.display, tilemap=self.game.tilemap, state="Locked")
             pygame.display.flip()
 
             buttons = []
@@ -55,30 +49,18 @@ class Partie(pygame.sprite.Sprite):
             for event in pygame.event.get():
                 #si boutton 1 est cliqué , on lance la partie1 ect...
                 if button1.handle_event(event)==1:
-                    level1 = Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=False, steps=False, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
-
-                    self.game.currentLevel = level1
-                    level1.run()
-                if button2.handle_event(event) == 1 and button2.state != "Locked":
-                    self.game.currentLevel =Niveau(game=self.game, player=self.game.player, plateformes=False, powersUp=False,
-                           steps=False, ennemies=self.game.ennemies, cartes=False, screen=self.game.screen,
-                           scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap,
-                           state="Locked")
-                if button3.handle_event(event)==1 and button3.state != "Locked":
-                    self.game.currentLevel =Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=False, steps=False, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
-
-                if button4.handle_event(event)==1 and button4.state != "Locked":
-                    self.game.currentLevel =Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=False, steps=False, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
-
-                if button5.handle_event(event)==1 and button5.state != "Locked":
-                    self.game.currentLevel =Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=False, steps=False, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
-                if button6.handle_event(event)==1 and button6.state != "Locked":
-                    self.game.currentLevel =Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=False, steps=False, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
-                if button7.handle_event(event)==1 and button7.state != "Locked":
-                    self.game.currentLevel =Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=False, steps=False, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
-                if button8.handle_event(event)==1 and button8.state != "Locked":
-                    self.game.currentLevel =Niveau(game=self.game,player=self.game.player,plateformes=False, powersUp=False, steps=False, ennemies=self.game.ennemies,cartes=False, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
-
+                    while True:
+                        level1 = Niveau(game=self.game, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
+                        self.game.currentLevel = level1
+                        game_state = level1.run()
+                        if game_state == "menu":
+                            self.reload()
+                            break
+                        elif game_state == "restart":
+                            self.reload()
+                            continue
+                        else:
+                            break
 
             self.game.screen.blit(pygame.transform.scale(self.game.display, self.game.screen.get_size()), (0, 0))
 
