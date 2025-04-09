@@ -229,6 +229,7 @@ class Player(PhysicsEntities):
 
     def checkLowPosition(self):
         if self.pos[1]>=640:
+
             self.explode()
     def explode(self):
         self.game.initialPosition = [100,50]
@@ -238,6 +239,8 @@ class Player(PhysicsEntities):
         self.jumpPower = -3.5
         self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
         self.set_action('idle')
+        sound = pygame.mixer.Sound("SONG/start.mp3")
+        sound.play()
         return True
     def attack(self):
         return self.dammages
