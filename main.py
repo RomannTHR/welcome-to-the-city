@@ -22,12 +22,14 @@ class Game:
         self.assets = {
             'background' : load_png('Background/4.png'),
             'cloud' : load_png('Background/cloud.png')[0],
+            'map_display' : load_png('Items/Cartes/scrolled_map.png'),
             'grass' : load_images('Tiles/Grass'),
             'stone': load_images('Tiles/Stone'),
             'ice': load_images('Tiles/Ice'),
             'purplegrass': load_images('Tiles/PurpleGrass'),
             'decor' : load_images('Tiles/Decor'),
             'plateforme' : load_images('Tiles/Plateformes'),
+            'jumper' : load_images('Tiles/Jumper'),
             'items/cartes' : load_images('Items/Cartes'),
             'player/idle' : Animation(load_images('Personnages/Idle'), img_dur=6),
             'player/run' : Animation(load_images('Personnages/Run'), img_dur=4),
@@ -45,7 +47,6 @@ class Game:
             'home_button': load_png('Buttons/home.png'),
             'back_button': load_png('Buttons/back.png'),
             'bullet': load_png('Bullets/bullet.png')
-
 
         }
 
@@ -67,8 +68,6 @@ class Game:
     #Niveau 2 
 
 
-
-    
 
     def run(self):
 

@@ -7,7 +7,7 @@ import pygame
 from socket import *
 from pygame.locals import *
 from metier.tilemap import Tilemap
-from utils.utils import load_images
+from utils.utils import load_images, load_png
 #from metier.personnage import Player
 from metier.niveau import Niveau
 from metier.entities import PhysicsEntities
@@ -34,7 +34,9 @@ class Game:
             'purplegrass': load_images('Tiles/PurpleGrass'),
             'decor' : load_images('Tiles/Decor'),
             'plateforme' : load_images('Tiles/Plateformes'),
-            'items/cartes' : load_images('Items/Cartes')
+            'items/cartes' : load_images('Items/Cartes'),
+            'map_display' : load_png('Items/Cartes/scrolled_map.png'),
+            'jumper' : load_images('Tiles/Jumper'),
         }
         
 

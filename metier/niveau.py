@@ -61,11 +61,12 @@ class Niveau(pygame.sprite.Sprite):
             self.player.render(self.display, offset=render_scroll)
 
 
+            self.display.blit(self.game.assets['map_display'][0], (0,0))
+
             font = pygame.font.SysFont("Arial", 16)
-            self.display.blit(self.game.assets['items/cartes'][2], (0, 50))
-            text = font.render(':' + str(self.player.map_number), True, (0, 0, 0))
-            self.display.blit(text, (32, 50 + 32/4))
-            
+            self.display.blit(self.game.assets['items/cartes'][2], (32, 32))
+            text = font.render(': ' + str(self.player.map_number) + '/4', True, (0, 0, 0))
+            self.display.blit(text, (64, 32 + 32/4))
             #print(self.tilemap.physics_rect_around(self.player.pos))
             for powerUp in self.game.powerUp:
                 powerUp.update()
