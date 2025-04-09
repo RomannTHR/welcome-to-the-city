@@ -17,8 +17,6 @@ class Game:
 
         self.screen = pygame.display.set_mode((Config.screen_width, Config.screen_height))
         self.display = pygame.Surface((Config.env_width, Config.env_height))
-        self.ennemies = []
-        self.powerUp = []
         self.assets = {
             'background' : load_png('Background/4.png'),
             'cloud' : load_png('Background/cloud.png')[0],
@@ -34,7 +32,7 @@ class Game:
             'player/idle' : Animation(load_images('Personnages/Idle'), img_dur=6),
             'player/run' : Animation(load_images('Personnages/Run'), img_dur=4),
             'player/jump' : Animation(load_images('Personnages/Idle'), img_dur=6),
-            'enemy/idle' : Animation(load_images('Ennemies/Idle'), img_dur=15),
+            'enemy/idle' : Animation(load_images('Ennemies/Walk'), img_dur=10),
             'enemy/run' : Animation(load_images('Ennemies/Run'), img_dur=7),
             'level1': load_png('Buttons/level1.png'),
             'level2': load_png('Buttons/level2.png'),
@@ -45,23 +43,21 @@ class Game:
             'level7': load_png('Buttons/level7.png'),
             'level8': load_png('Buttons/level8.png'),
             'home_button': load_png('Buttons/home.png'),
+            'back_button': load_png('Buttons/back.png'),
+            'win': load_png('Background/win.png'),
             'bullet': load_png('Bullets/bullet.png')
 
         }
-
+        self.ennemies = []
+        self.powersUp = []
         self.clouds = Clouds(self.assets['cloud'], 8)
 
         self.player = Player(self,(100,100),(32,32))
         self.ennemies.append(Enemy(self,(215,300),(32,32),200,450))
-        self.powerUp.append(PowerUp(100,125,"powerUp/coffre_ferme.png", "Jump"))
+        self.powersUp.append(PowerUp(100,125,"powerUp/coffre_ferme.png", "Jump"))
         self.tilemap = Tilemap(self,tile_size=32)
         self.tilemap.load('Entities/save_editor/map.json')
         self.scroll = [0,0]
-        level1 = Niveau(game=self, player=self.player, plateformes=False, powersUp=self.powerUp, steps=False,
-                        ennemies=self.ennemies, cartes=False, screen=self.screen, scroll=self.scroll,
-                        display=self.display, tilemap=self.tilemap, state="Locked")
-
-        self.currentLevel = level1
         self.initialPosition = [100,50]
 
     #Niveau 2 

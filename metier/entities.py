@@ -92,7 +92,6 @@ class PhysicsEntities:
         else:
             self.explode()
     def explode(self):
-        print("chui mort")
         self.game.initialPosition = [100,50]
         self.pos = self.game.initialPosition
         self.velocity = [0, 0]
@@ -112,10 +111,12 @@ class  Enemy(PhysicsEntities):
         self.direction = -1
         self.sended_Bullet = []
         self.can_fire = 0
+        self.set_action('idle')
         
     def update(self, tilemap, movement=(0, 0)):
         self.pos[0] += self.direction*self.speed
         self.can_fire-=1
+        self.set_action('idle')
         distance_x = abs(self.pos[0] - self.game.player.pos[0])
         if distance_x < 300 and self.can_fire <= 0:
             self.shoot()
@@ -127,6 +128,7 @@ class  Enemy(PhysicsEntities):
             self.flip = True
         for bullet in self.sended_Bullet:
             bullet.update()
+        self.animation.update()
     def shoot(self):
         dx = self.game.player.pos[0] - self.pos[0]
         dy = self.game.player.pos[1] - self.pos[1]
@@ -218,6 +220,12 @@ class Player(PhysicsEntities):
             self.set_action('run') 
         else:
             self.set_action('idle')
+        #Manage collisions with Items entities
+        for rect in tilemap.items_rects_around(self.pos):
+            if self.rect().colliderect(rect[0]):
+                if rect[1]['item_name'] == 'cartes':
+                    self.map_number += 1
+                    del tilemap.tilemap[str(rect[1]['data']['pos'][0]) + ';' + str(rect[1]['data']['pos'][1])]
 
     def checkLowPosition(self):
         if self.pos[1]>=640:
@@ -230,14 +238,9 @@ class Player(PhysicsEntities):
         self.jumpPower = -3.5
         self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
         self.set_action('idle')
+        return True
     def attack(self):
         return self.dammages
 
 
-        #Manage collisions with Items entities
-        for rect in tilemap.items_rects_around(self.pos):
-            if self.rect().colliderect(rect[0]):
-                if rect[1]['item_name'] == 'cartes':
-                    self.map_number += 1
-                    del tilemap.tilemap[str(rect[1]['data']['pos'][0]) + ';' + str(rect[1]['data']['pos'][1])]
 
