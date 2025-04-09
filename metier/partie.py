@@ -26,7 +26,14 @@ class Partie(pygame.sprite.Sprite):
         self.draw()
 
     def draw(self):
+        '''
+        Cette class gère le menu de tout les niveaux ainsi que l'écran d'accueil (sur le même écran)
+        :return:
+        '''
         while self.running:
+            pygame.mixer.init()
+            pygame.mixer.music.load("SONG/level.mp3")
+            pygame.mixer.music.play(-1)
             self.game.display.blit(self.game.assets['background'][0], (0,0))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -52,11 +59,11 @@ class Partie(pygame.sprite.Sprite):
                     while True:
                         level1 = Niveau(game=self.game, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
                         self.game.currentLevel = level1
-                        game_state = level1.run()
-                        if game_state == "menu":
+                        level1.run()
+                        if level1.status == "menu":
                             self.reload()
                             break
-                        elif game_state == "restart":
+                        elif level1.status == "restart":
                             self.reload()
                             continue
                         else:

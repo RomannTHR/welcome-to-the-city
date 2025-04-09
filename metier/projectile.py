@@ -15,6 +15,11 @@ except ImportError as err:
 
 
 class Projectile:
+    '''
+    cette classe représente le projectile envoyé par l'ennemi
+    Il a une image , une position , une taille pour la hitbox , une direction sous forme de tableau à deux valeurs ,
+    une valeur de vitesse et une distance parcouru depuis son lancement
+    '''
     def __init__(self, x, y, direction=(1, 0), speed=1):
         self.image, _ = load_png("Bullets/bullet.png")
         self.image = pygame.transform.scale(self.image, (20, 20))
