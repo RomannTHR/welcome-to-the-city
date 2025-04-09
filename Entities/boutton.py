@@ -19,4 +19,5 @@ class Button:
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and (self.state =="Unlocked" or self.state=="Start"):
             if self.rect.collidepoint(event.pos):
-                return 1
+                return True
+        return False

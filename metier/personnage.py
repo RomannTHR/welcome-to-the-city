@@ -10,7 +10,6 @@ try:
     from pygame.locals import *
     from utils.utils import load_png
     from config.config import Config
-    from metier.projectiles import Projectile
 except ImportError as err:
     print(f"couldn't load module. {err}")
     sys.exit(2)
@@ -116,26 +115,3 @@ class Player(pygame.sprite.Sprite):
                 if current_time - self.last_ennemy_time > self.last_ennemy_cooldown:
                     self.hurt(collisions[0].dammages)
                     self.last_ennemy_time = current_time
-    def tirer(self):
-        if self.power == "Tirer" :
-            current_time=time.time()
-            if current_time - self.last_shot_time > self.shoot_cooldown:
-                projectile = Projectile(self.rect.x + 20, self.rect.y, "Rien")
-                self.sended_projectile.add(projectile)
-                self.last_shot_time = current_time
-    def hurt(self, dammages):
-
-        print(self.isShielded)
-        if self.isShielded:
-            self.image = pygame.transform.rotozoom(self.image, 0, 0.667)
-            self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
-            self.isShielded = False
-        elif self.life>dammages:
-            self.life-=dammages
-        else:
-            self.explode()
-    def explode(self):
-        print("Chui mort")
-    def stayOnStep(self,step):
-        if step.movable :
-            self.rect.x = step.rect.x
