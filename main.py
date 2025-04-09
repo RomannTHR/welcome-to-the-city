@@ -43,6 +43,7 @@ class Game:
             'level7': load_png('Buttons/level7.png'),
             'level8': load_png('Buttons/level8.png'),
             'home_button': load_png('Buttons/home.png'),
+            'back_button': load_png('Buttons/back.png'),
             'bullet': load_png('Bullets/bullet.png')
 
 

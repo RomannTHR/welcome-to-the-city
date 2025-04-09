@@ -35,7 +35,11 @@ class Niveau(pygame.sprite.Sprite):
         self.all_sprites.draw(self.screen)
         self.player.sended_projectile.draw(self.screen)
         pygame.display.flip()
-
+    def checkWin(self):
+        if self.cartes >=4:
+            print("a")
+    def draw(self, ):
+        button_back = Button(20, 30, "", "Unlocked", self.game.assets['home_button'])
     def run(self):
         clock = pygame.time.Clock()
         running = True
