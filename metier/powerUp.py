@@ -13,7 +13,9 @@ except ImportError as err:
     print(f"couldn't load module. {err}")
     sys.exit(2)
 class PowerUp(pygame.sprite.Sprite):
-
+    """
+    Cette classe représente les powers Up
+    """
     def __init__(self,x,y,image_path,type):
         self.image, self.rect = load_png(image_path)
         self.anim_offset = (-3, -3)

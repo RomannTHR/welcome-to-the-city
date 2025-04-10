@@ -28,7 +28,6 @@ class Partie(pygame.sprite.Sprite):
     def draw(self):
         '''
         Cette class gère le menu de tout les niveaux ainsi que l'écran d'accueil (sur le même écran)
-        :return:
         '''
         while self.running:
             pygame.mixer.init()
