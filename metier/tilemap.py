@@ -61,7 +61,7 @@ class Tilemap:
 
     def physics_rect_around(self, pos):
         """
-        Va retourner toutes les textures 
+        Va retourner toutes les textures physiques (avec les quelles il y a des collisions) en Rect
         """
         rects = []
 
@@ -85,6 +85,9 @@ class Tilemap:
         return rects
     
     def items_rects_around(self, pos):
+        """
+        Retourne les rects des items à proximité d'une position
+        """
         rects = []
         for tile in self.tiles_around(pos):
             str_type = tile['type'].split('/')
@@ -96,12 +99,6 @@ class Tilemap:
         return rects
 
 
-    def all_physics_rect(self):
-        rects = []
-        for key in self.tilemap:
-            tile = tile[key]
-            print(tile['pos'])
-        return rects
 
     def solid_check(self, pos):
         tile_loc = str(int(pos[0] // self.tile_size)) + ';' + str(int(pos[1] // self.tile_size))
@@ -110,12 +107,18 @@ class Tilemap:
                 return self.tilemap[tile_loc]
 
     def save(self, path):
+        """
+        Permet de sauvegarder dans l'editeur (editor.py)
+        """
         f = open(path, 'w')
         json.dump({'tilemap': self.tilemap, 'tile_size': self.tile_size, 'offgrid' : self.offgrid_tiles, 'moving_tiles' : self.moving_tiles}, f)
         f.close()
 
 
     def load(self, path):
+        """
+        Permet de charger la map (les tiles)
+        """
         f = open(path, 'r')
         data = json.load(f)
         f.close()
@@ -126,6 +129,9 @@ class Tilemap:
         self.moving_tiles = data['moving_tiles']
 
     def update_tiles(self):
+        """
+        Permet de faire bouger les moving tiles sur l'axe y et x
+        """
         for tile in self.moving_tiles:
 
             tile['frame_counter'] = 0
@@ -156,6 +162,9 @@ class Tilemap:
 
 
     def render(self, surf, offset=(0,0)):
+        """
+        Permet d'afficher les tiles sur l'écran
+        """
         for tile in self.offgrid_tiles:
             surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] - offset[0], tile['pos'][1] - offset[1]))
 

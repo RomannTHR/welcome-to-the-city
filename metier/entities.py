@@ -314,6 +314,9 @@ class Player(PhysicsEntities):
         return self.dammages
 
 class FinalBoss(PhysicsEntities):
+    """
+    Cette classe représente le boss final présent à la fin du niveau 1
+    """
     def __init__(self, game, pos, size):
         super().__init__(game, 'finalboss', pos, size)
 
@@ -349,6 +352,9 @@ class FinalBoss(PhysicsEntities):
 
         
     def check_finalboss_in_the_screen(self, player_pos):
+        """
+        Regarde si le boss est apparu dans sur l'écran
+        """
         for offset in NEIGHTBOR_OFFSETS:
             finalboss_position = (int(self.physics_pos[0] // 32),int(self.physics_pos[1] // 32))
             check_loc = (finalboss_position[0] + (offset[0] + (20//2)), finalboss_position[1] + (offset[1] + (14//2)))
@@ -358,6 +364,9 @@ class FinalBoss(PhysicsEntities):
                 self.spawn_timer = self.spawn_duration
 
     def check_player_around(self, player_pos):
+        """
+        Regarde si le joueur est proche du boss
+        """
         for offset in NEIGHTBOR_OFFSETS:
             finalboss_position = (int(self.physics_pos[0] // 32),int(self.physics_pos[1] // 32))
             check_loc = (finalboss_position[0] + offset[0], finalboss_position[1] + offset[1])
@@ -371,7 +380,9 @@ class FinalBoss(PhysicsEntities):
             
 
     def update(self, tilemap, player, movement=(0,0)):
-        
+        """
+        Gère les collisions et les animations du boss
+        """
 
         self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
         player_pos = player.pos
@@ -500,15 +511,16 @@ class FinalBoss(PhysicsEntities):
         self.animation.update()
 
     def explode(self):
-        #self.game.initialPosition = [100,50]
-        #self.pos = self.game.initialPosition
-        #self.velocity = [0, 0]
-        #self.life+=5
-        #self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
+        """
+        Fais mourir le boss
+        """
         self.set_action('death')
 
 
     def render(self, surf, offset):
+        """
+        Affiche le boss et sa barre de vie
+        """
         draw_x = self.physics_pos[0] - (self.size[0] - self.hitbox_size[0]) // 2
         draw_y = self.physics_pos[1] - (self.size[1] - self.hitbox_size[1]) + 16
 

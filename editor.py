@@ -18,6 +18,9 @@ RENDER_SCALE = 2
 CAMERA_SPEED = 2
 
 class Game:
+    """
+    Classe qui permet d'editer notre monde/ notre niveau pour placer les tiles
+    """
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Futur")
@@ -60,13 +63,36 @@ class Game:
     
 
     def run(self):
+        """
+        Permet de lancer l'editeur et de gérer toutes les intéractions avec les touches pour placer les tiles sur la map
 
+        On peut placer trois types de tiles: 
+
+        - Ongrid : Sur la grille --> Des tiles liées aux îles
+        - Offgrid : Décorations
+        - Moving tiles : Textures qui vont bouger au fil du temps
+
+        Touches : 
+
+        - Fleches pour se déplacer sur la map
+        - O : Outpour -> Sauvegader
+        - M : Passer sur les tiles mouvants
+        - G : Passer sur les tiles offgrid
+
+        - Click gauche : Placer un tile
+        - Click droit : Supprimer un tile
+
+        - Molette défilier dans les tiles (dans les dossiers)
+        - Shift : Permet de soit choisir de défilier dans un dossier ou de choisir de changer de dossier de tiles
+
+        """
         clock = pygame.time.Clock()
         running = True
         while running:
             #self.display.blit(self.assets['background'][0], (0,0))
             self.display.fill((0,0,0))
             
+
             self.scroll[0] += (self.movement[1] - self.movement[0]) * CAMERA_SPEED
             self.scroll[1] += (self.movement[2] - self.movement[3]) * CAMERA_SPEED
             render_scroll = (int(self.scroll[0]),int(self.scroll[1]))
@@ -86,7 +112,7 @@ class Game:
             text = font.render(str(tile_pos[0]) + ';' + str(tile_pos[1]), True, (255, 255, 255))
             self.display.blit(text, (0, 50))
 
-
+            
             if self.ongrid: 
                 self.display.blit(current_tile_img, (int(tile_pos[0] * self.tilemap.tile_size - self.scroll[0]) ,int(tile_pos[1] * self.tilemap.tile_size - self.scroll[1])))
             else:
@@ -157,8 +183,6 @@ class Game:
                         self.moving_tile = not self.moving_tile
                     if event.key == pygame.K_o:
                         self.tilemap.save('Entities/save_editor/map.json')
-                    if event.key == pygame.K_t:
-                        self.tilemap.autotile()
                     if event.key == pygame.K_LSHIFT:
                         self.current_tile_variant = 0
                         self.shift = not self.shift 
