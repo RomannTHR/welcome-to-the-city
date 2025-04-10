@@ -227,7 +227,6 @@ class Player(PhysicsEntities):
         bar_width = 25
         bar_height = 3
         hp_percent = max(self.life / self.max_life, 0)
-
         bar_x = self.pos[0] - offset[0] + self.anim_offset[0] + 2.5
         bar_y = self.pos[1] - offset[1] + self.anim_offset[1] - 10 
 
@@ -305,7 +304,7 @@ class Player(PhysicsEntities):
         self.game.initialPosition = [100,50]
         self.pos = self.game.initialPosition
         self.velocity = [0, 0]
-        self.life+=5
+        self.life = 5
         self.jumpPower = -3.5
         self.set_action('idle')
         sound = pygame.mixer.Sound("SONG/start.mp3")

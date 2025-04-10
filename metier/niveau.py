@@ -18,10 +18,6 @@ class Niveau(pygame.sprite.Sprite):
         self.powersUp = []
         self.ennemies = []
         self.finalboss = self.game.finalboss
-        self.player = player
-        self.plateformes = steps
-        self.powersUp = powersUp
-        self.ennemies = ennemies
         self.screen = screen
         self.display = display
         self.state = state
@@ -29,7 +25,6 @@ class Niveau(pygame.sprite.Sprite):
         self.scroll = scroll
         #la map de base
         self.tilemap = tilemap
-        self.cartes = cartes
         self.finalboss_number = 0
         self.cartes_founded = 0
         self.all_sprites = pygame.sprite.Group()
@@ -88,11 +83,16 @@ class Niveau(pygame.sprite.Sprite):
                 if self.finalboss.is_dead:
                     self.finalboss_number = 1
                     self.finalboss = None
-
+            
             font = pygame.font.SysFont("Arial", 16)
             self.display.blit(self.game.assets['items/cartes'][2], (32, 32))
             text = font.render(': ' + str(self.player.map_number) + '/4', True, (0, 0, 0))
-            self.display.blit(text, (64, 32 + 32 / 4))
+            self.display.blit(text, (64, 32 + 32/4))
+
+            self.display.blit(self.game.assets['monster_display'][0], (32, 64))
+            text = font.render(': ' + str(self.finalboss_number) + '/1', True, (0, 0, 0))
+            self.display.blit(text, (64, 64 + 32/4))
+
             self.home_button.draw(self.game)
             if not self.isWin:
                 self.handle_pygame_events()
@@ -147,6 +147,7 @@ class Niveau(pygame.sprite.Sprite):
                     enemy.sended_Bullet.remove(bullet)
     #gère tout les évènements du clavier et leurs actions associées
     def handle_pygame_events(self):
+        render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -163,23 +164,24 @@ class Niveau(pygame.sprite.Sprite):
                     self.running = False
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_q:
                     self.movement[0] = True + self.player.playerSpeed
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_d:
                     self.movement[1] = True + self.player.playerSpeed
-                if event.key == pygame.K_SPACE and self.player.canDash and self.movement[0] > 0:
+                if event.key == pygame.K_e and self.player.canDash and self.movement[0] > 0:
                     self.player.isDashingLeft = True
-                if event.key == pygame.K_SPACE and self.player.canDash and self.movement[1] > 0:
+                if event.key == pygame.K_e and self.player.canDash and self.movement[1] > 0:
                     self.player.isDashingRight = True
-                if event.key == pygame.K_UP and self.player.isJumping == False:
+                if event.key == pygame.K_SPACE and self.player.isJumping == False:
                     self.player.velocity[1] = self.player.jumpPower
                     self.player.isJumping = True
-                if event.key == pygame.K_UP and self.player.isWallJumping:
+                if event.key == pygame.K_SPACE and self.player.isWallJumping:
                     self.player.velocity[1] = self.player.jumpPower
                     self.player.isWallJumping -= 1
-                if event.key == pygame.K_g:
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
                     if not self.player.is_attacking:
-                        self.player.set_action('run')
                         self.player.is_attacking = True
                         self.player.attack_timer = int(0.5 * 60)
                         sound = pygame.mixer.Sound("SONG/player_attack.mp3")
@@ -190,90 +192,12 @@ class Niveau(pygame.sprite.Sprite):
                         if distance_x < 30 and distance_y < 10:
                             enemy.hurt(self.player.dammages)
                             self.ennemies.remove(enemy)
-
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_q:
                     self.movement[0] = False
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_d:
                     self.movement[1] = False
-            self.display.blit(text, (64, 32 + 32/4))
-
-            self.display.blit(self.game.assets['monster_display'][0], (32, 64))
-            text = font.render(': ' + str(self.finalboss_number) + '/1', True, (0, 0, 0))
-            self.display.blit(text, (64, 64 + 32/4))
-            for powerUp in self.game.powerUp:
-                powerUp.update()
-                powerUp.render(self.display,offset=render_scroll)
-                if powerUp.rect.colliderect(self.player) and not powerUp.isFound:
-                    powerUp.changeStateOpen()
-                    powerUp.isFound = True
-                    if powerUp.type ==  "Shield" and not self.player.isShielded:
-                        self.player.life += 5
-                    elif powerUp.type == "Jump" :
-                        self.player.jumpPower -=2
-            for enemy in self.game.ennemies:
-                enemy.update(self.tilemap)
-                enemy.render(self.display, offset=render_scroll)
-                for bullet in enemy.sended_Bullet:
-                    bullet.update()
-                    bullet.render(self.display, offset=render_scroll)
-                    if bullet.rect().colliderect(self.player.rect()):
-                        self.player.hurt(enemy.dammages)
-                    tilesAround = self.game.tilemap.physics_rect_around(bullet.pos)
-                    for tile in tilesAround:
-                        if bullet.rect().colliderect(tile[0]):
-                            if bullet in enemy.sended_Bullet:
-                                enemy.sended_Bullet.remove(bullet)
-
-
-
-
-
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if self.home_button.handle_event(event):
-                    running = False
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        self.movement[0] = True + self.player.playerSpeed
-                    if event.key == pygame.K_d:
-                        self.movement[1] = True + self.player.playerSpeed
-                    if event.key == pygame.K_e and self.player.canDash and self.movement[0] > 0:
-                            self.player.isDashingLeft = True
-                    if event.key == pygame.K_e and self.player.canDash and self.movement[1] > 0:
-                            self.player.isDashingRight = True                  
-                    if event.key == pygame.K_SPACE and self.player.isJumping == False:
-                        self.player.velocity[1] = self.player.jumpPower
-                        self.player.isJumping = True
-                    if event.key == pygame.K_SPACE and self.player.isWallJumping:
-                        self.player.velocity[1] = self.player.jumpPower
-                        self.player.isWallJumping -= 1
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        if not self.player.is_attacking:
-                            self.player.is_attacking = True
-                            self.player.attack_timer = int(0.5 * 60)
-                        for enemy in self.ennemies:
-                            distance_x = abs(self.player.pos[0] - enemy.pos[0])
-                            distance_y = abs(self.player.pos[1] - enemy.pos[1])
-                            if distance_x < 30 and distance_y < 10:
-                                enemy.hurt(self.player.dammages)
-                                self.ennemies.remove(enemy)
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_q:
-                        self.movement[0] = False
-                    if event.key == pygame.K_d:
-                        self.movement[1] = False
-                    
-
-            self.update()
-            
-            #self.all_sprites.draw(self.display)
             
 
-            self.screen.blit(pygame.transform.scale(self.display,self.screen.get_size()), (0,0))
-            pygame.display.update()  
-            clock.tick(60)
+
+
