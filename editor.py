@@ -37,6 +37,7 @@ class Game:
             'items/cartes' : load_images('Items/Cartes'),
             'map_display' : load_png('Items/Cartes/scrolled_map.png'),
             'jumper' : load_images('Tiles/Jumper'),
+            'nocollisions': load_images('Tiles/NoCollisions'),
         }
         
 
@@ -88,7 +89,7 @@ class Game:
             if self.ongrid: 
                 self.display.blit(current_tile_img, (int(tile_pos[0] * self.tilemap.tile_size - self.scroll[0]) ,int(tile_pos[1] * self.tilemap.tile_size - self.scroll[1])))
             else:
-                self.display.blit(current_tile_img, (int(mouse_position[0]  - self.scroll[0]) ,int(mouse_position[1] - self.scroll[1])))
+                self.display.blit(current_tile_img, (int(mouse_position[0]) ,int(mouse_position[1])))
 
             if self.clicking and self.ongrid and not self.moving_tile:
                 self.tilemap.tilemap[str(tile_pos[0]) + ';' + str(tile_pos[1])] =  {'type': self.tile_list[self.current_tile_group], 'variant': self.current_tile_variant, 'pos': (tile_pos[0], tile_pos[1])}
@@ -122,7 +123,7 @@ class Game:
                     if event.button == 1:
                         self.clicking = True
                         if not self.ongrid:
-                            self.tilemap.offgrid_tiles.append({'type': self.tile_list[self.current_tile_group], 'variant': self.current_tile_variant, 'pos': (mouse_position[0] + self.scroll[0], mouse_position[1] + self.scroll[0])})
+                            self.tilemap.offgrid_tiles.append({'type': self.tile_list[self.current_tile_group], 'variant': self.current_tile_variant, 'pos': (mouse_position[0] + self.scroll[0], mouse_position[1] + self.scroll[1])})
                     if event.button == 3:
                         self.right_clicking = True                            
                     if self.shift == True:

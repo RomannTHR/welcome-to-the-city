@@ -7,6 +7,8 @@ PHYSICS_TILES = {'grass','stone', 'plateforme', 'ice', 'purplegrass', 'jumper'}
 ITEMS_TILES = {'cartes'}
 
 class Tilemap:
+    #Tilemap basé sur une vidéo youtube : https://www.youtube.com/watch?v=2gABYM5M0ww&t=11420s
+
     def __init__(self, game, tile_size=16):
         self.game = game
         self.tile_size = tile_size
@@ -93,10 +95,10 @@ class Tilemap:
             initial_x, initial_y = tile['initial_pos']
             current_x, current_y = tile['pos']
             increment = tile['next_pos_increment']
-            direction = tile.get('direction', 'x')
-            range_limit = tile.get('range', 5)
+            direction = tile['direction']
+            range_limit = 5 
             if direction == 'x':
-
+                #Aide de ChatGPT pour cette étape
                 delta = current_x - initial_x
 
                 if abs(delta + increment) > range_limit:

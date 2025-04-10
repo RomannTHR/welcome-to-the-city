@@ -4,7 +4,7 @@ from metier.tilemap import Tilemap
 from utils.utils import Animation, load_png, load_images, load_image
 from metier.partie import Partie
 
-from metier.entities import PhysicsEntities, Player,Enemy
+from metier.entities import FinalBoss, PhysicsEntities, Player,Enemy
 from metier.clouds import Cloud, Clouds
 from config.config import Config
 from metier.niveau import Niveau
@@ -31,11 +31,17 @@ class Game:
             'plateforme' : load_images('Tiles/Plateformes'),
             'jumper' : load_images('Tiles/Jumper'),
             'items/cartes' : load_images('Items/Cartes'),
+            'nocollisions': load_images('Tiles/NoCollisions'),
             'player/idle' : Animation(load_images('Personnages/Idle'), img_dur=6),
             'player/run' : Animation(load_images('Personnages/Run'), img_dur=4),
             'player/jump' : Animation(load_images('Personnages/Idle'), img_dur=6),
+            'player/attack' : Animation(load_images('Personnages/Attack'), img_dur=6),
             'enemy/idle' : Animation(load_images('Ennemies/Idle'), img_dur=15),
             'enemy/run' : Animation(load_images('Ennemies/Run'), img_dur=7),
+            'finalboss/idle' : Animation(load_images('FinalBoss/Idle'), img_dur=8),
+            'finalboss/attack' : Animation(load_images('FinalBoss/Attack'), img_dur=12),
+            'finalboss/death' : Animation(load_images('FinalBoss/Death')),
+            'finalboss/spawning' : Animation(load_images('FinalBoss/Spawning'), img_dur=6),
             'level1': load_png('Buttons/level1.png'),
             'level2': load_png('Buttons/level2.png'),
             'level3': load_png('Buttons/level3.png'),
@@ -46,7 +52,6 @@ class Game:
             'level8': load_png('Buttons/level8.png'),
             'home_button': load_png('Buttons/home.png'),
             'bullet': load_png('Bullets/bullet.png')
-
         }
 
         self.clouds = Clouds(self.assets['cloud'], 8)
@@ -55,6 +60,7 @@ class Game:
         self.ennemies.append(Enemy(self,(215,300),(32,32),200,450))
         self.powerUp.append(PowerUp(100,125,"powerUp/coffre_ferme.png", "Jump"))
         self.tilemap = Tilemap(self,tile_size=32)
+        self.finalboss = FinalBoss(self, (-608,-800), (100,100))
         self.tilemap.load('Entities/save_editor/map.json')
         self.scroll = [0,0]
         level1 = Niveau(game=self, player=self.player, plateformes=False, powersUp=self.powerUp, steps=False,
