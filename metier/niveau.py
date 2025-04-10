@@ -95,34 +95,34 @@ class Niveau(pygame.sprite.Sprite):
                 pygame.display.update()
 
             
-            if self.finalboss != None:
-                self.finalboss.render(self.display, offset=render_scroll)
-                self.finalboss.update(self.tilemap, self.player)
-                if self.finalboss.is_dead:
-                    self.finalboss_number = 1
-                    self.finalboss = None
+                if self.finalboss != None:
+                    self.finalboss.render(self.display, offset=render_scroll)
+                    self.finalboss.update(self.tilemap, self.player)
+                    if self.finalboss.is_dead:
+                        self.finalboss_number = 1
+                        self.finalboss = None
             
-            font = pygame.font.SysFont("Arial", 16)
-            self.display.blit(self.game.assets['items/cartes'][2], (32, 32))
-            text = font.render(': ' + str(self.player.map_number) + '/4', True, (0, 0, 0))
-            self.display.blit(text, (64, 32 + 32/4))
+                font = pygame.font.SysFont("Arial", 16)
+                self.display.blit(self.game.assets['items/cartes'][2], (32, 32))
+                text = font.render(': ' + str(self.player.map_number) + '/4', True, (0, 0, 0))
+                self.display.blit(text, (64, 32 + 32/4))
 
-            self.display.blit(self.game.assets['monster_display'][0], (32, 64))
-            text = font.render(': ' + str(self.finalboss_number) + '/1', True, (0, 0, 0))
-            self.display.blit(text, (64, 64 + 32/4))
+                self.display.blit(self.game.assets['monster_display'][0], (32, 64))
+                text = font.render(': ' + str(self.finalboss_number) + '/1', True, (0, 0, 0))
+                self.display.blit(text, (64, 64 + 32/4))
 
-            self.home_button.draw(self.game)
-            if not self.isWin:
-                self.handle_pygame_events()
-            if self.jump_power_timer is not None:
-                if pygame.time.get_ticks() >= self.jump_power_timer:
-                    self.player.jumpPower += 2
-                    self.jump_power_timer =None
-            self.checkWin()
-            self.update()
-            self.screen.blit(pygame.transform.scale(self.display,self.screen.get_size()), (0,0))
-            pygame.display.update()  
-            clock.tick(60)
+                self.home_button.draw(self.game)
+                if not self.isWin:
+                    self.handle_pygame_events()
+                if self.jump_power_timer is not None:
+                    if pygame.time.get_ticks() >= self.jump_power_timer:
+                        self.player.jumpPower += 2
+                        self.jump_power_timer =None
+                self.checkWin()
+                self.update()
+                self.screen.blit(pygame.transform.scale(self.display,self.screen.get_size()), (0,0))
+                pygame.display.update()
+                clock.tick(60)
         return status
     #gère les powers-up (affichage, collision,effet sur le joueur)
     def handle_powersUp(self):

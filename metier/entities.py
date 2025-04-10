@@ -154,7 +154,7 @@ class  Enemy(PhysicsEntities):
     def update(self, tilemap,player_pos0,player_pos1, movement=(0, 0)):
         """
         Va gérer les projectiles, les collisions avec les balles...
-
+    """
         self.pos[0] += self.direction*self.speed
         self.can_fire-=1
         self.set_action('idle')
