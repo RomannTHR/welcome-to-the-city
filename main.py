@@ -11,6 +11,9 @@ from metier.niveau import Niveau
 from metier.powerUp import PowerUp
 
 class Game:
+    """
+    Classe mère du jeux.
+    """
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Futur")
@@ -56,13 +59,10 @@ class Game:
             'win': load_png('Background/win.png'),
             'bullet': load_png('Bullets/bullet.png')
         }
-        self.ennemies = []
-        self.powersUp = []
+
         self.clouds = Clouds(self.assets['cloud'], 8)
 
         self.player = Player(self,(100,100),(32,32))
-        self.ennemies.append(Enemy(self,(215,300),(32,32),200,450))
-        self.powersUp.append(PowerUp(100,125,"powerUp/coffre_ferme.png", "Jump"))
         self.tilemap = Tilemap(self,tile_size=32)
         self.finalboss = FinalBoss(self, (-608,-800), (100,100))
         self.tilemap.load('Entities/save_editor/map.json')
