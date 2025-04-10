@@ -43,6 +43,47 @@ class Tilemap:
                     rects.append((pygame.Rect(tile['pos'][0] * self.tile_size,tile['pos'][1] * self.tile_size,self.tile_size,self.tile_size), {'ismoving':False, 'data': tile} ))
         return rects
     
+    def pixel_moving_platforms_around(self, pos, radius=64):
+        """Retourne les plateformes mobiles en pixel près proches de `pos`."""
+        rects = []
+        for tile in self.moving_tiles:
+            tile_rect = pygame.Rect(tile['pos'][0], tile['pos'][1], self.tile_size, self.tile_size)
+            if tile_rect.collidepoint(pos[0], pos[1]) or tile_rect.colliderect(
+                pygame.Rect(pos[0] - radius, pos[1] - radius, radius * 2, radius * 2)
+            ):
+                rects.append((
+                    tile_rect,
+                    {
+                        'ismoving': True,
+                        'next_pos_increment': tile['next_pos_increment'],
+                        'direction': tile['direction'],
+                        'data': tile
+                    }
+                ))
+        return rects
+
+    def physics_rect_around(self, pos):
+        rects = []
+
+        # Tiles sur grille
+        for tile in self.tiles_around(pos):
+            if tile['type'] in PHYSICS_TILES:
+                if 'move_delay' in tile:
+                    rects.append((
+                        pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size, self.tile_size),
+                        {'ismoving': True, 'next_pos_increment': tile['next_pos_increment'], 'direction': tile['direction'], 'data': tile}
+                    ))
+                else:
+                    rects.append((
+                        pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size, self.tile_size),
+                        {'ismoving': False, 'data': tile}
+                    ))
+
+        # Plateformes pixels
+        rects.extend(self.pixel_moving_platforms_around(pos))
+
+        return rects
+    
     def items_rects_around(self, pos):
         rects = []
         for tile in self.tiles_around(pos):
@@ -86,17 +127,13 @@ class Tilemap:
 
     def update_tiles(self):
         for tile in self.moving_tiles:
-            tile['frame_counter'] += 1
-
-            if tile['frame_counter'] < tile.get('move_delay', 10):
-                continue
 
             tile['frame_counter'] = 0
             initial_x, initial_y = tile['initial_pos']
             current_x, current_y = tile['pos']
             increment = tile['next_pos_increment']
             direction = tile['direction']
-            range_limit = 5 
+            range_limit = 5 * self.tile_size
             if direction == 'x':
                 #Aide de ChatGPT pour cette étape
                 delta = current_x - initial_x
@@ -108,6 +145,7 @@ class Tilemap:
                 tile['pos'] = (current_x + increment, current_y)
 
             elif direction == 'y':
+                #print(tile['pos'])
                 delta = current_y - initial_y
 
                 if abs(delta + increment) > range_limit:
@@ -122,7 +160,7 @@ class Tilemap:
             surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] - offset[0], tile['pos'][1] - offset[1]))
 
         for moving_tile in self.moving_tiles:
-            surf.blit(self.game.assets[moving_tile['type']][moving_tile['variant']], (moving_tile['pos'][0] * self.tile_size - offset[0], moving_tile['pos'][1] * self.tile_size - offset[1]))
+            surf.blit(self.game.assets[moving_tile['type']][moving_tile['variant']], (moving_tile['pos'][0] - offset[0], moving_tile['pos'][1] - offset[1]))
 
         for loc in self.tilemap:
             tile = self.tilemap[loc]

@@ -70,7 +70,7 @@ class Niveau(pygame.sprite.Sprite):
             self.display.blit(self.game.assets['items/cartes'][2], (32, 32))
             text = font.render(': ' + str(self.player.map_number) + '/4', True, (0, 0, 0))
             self.display.blit(text, (64, 32 + 32/4))
-            #print(self.tilemap.physics_rect_around(self.player.pos))
+
             for powerUp in self.game.powerUp:
                 powerUp.update()
                 powerUp.render(self.display,offset=render_scroll)

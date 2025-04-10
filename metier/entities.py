@@ -21,6 +21,7 @@ class PhysicsEntities:
         self.life = 5
         self.attack_timer = 0
         self.is_attacking = False
+        self.is_on_moving_plateform = False
         self.just_jumped_from_jumper = False
         self.counter = 0
 
@@ -41,15 +42,16 @@ class PhysicsEntities:
         entity_rect = self.rect()
 
         
-
+        print(self.is_on_moving_plateform)
 
         #Manage collisions with physics entities
         for rect in tilemap.physics_rect_around(self.pos):
             if entity_rect.colliderect(rect[0]):
-                if frame_movement[0] > 0:
+                if frame_movement[0] > 0 and not self.is_on_moving_plateform:
                     entity_rect.right = rect[0].left
                     self.collisions['right'] = True
-                if frame_movement[0] < 0:
+                if frame_movement[0] < 0 and not self.is_on_moving_plateform:
+                    #print("test")
                     entity_rect.left = rect[0].right
                     self.collisions['left'] = True
                 self.pos[0] = entity_rect.x
@@ -60,10 +62,13 @@ class PhysicsEntities:
             if entity_rect.colliderect(rect[0]):
                 if frame_movement[1] > 0:
                     is_moving = rect[1]['ismoving']
-                    if is_moving and self.isOnGround:
+                    if not is_moving and self.isOnGround:
+                        self.is_on_moving_plateform = False
+                    elif is_moving and self.isOnGround:
                         direction = rect[1]['direction']
                         if direction == 'x':
-                            self.pos = [self.pos[0] + (rect[1]['next_pos_increment'] * 32//10) , self.pos[1]]
+                            self.pos = [self.pos[0] + (rect[1]['next_pos_increment']) , self.pos[1]]
+                    
                     if rect[1]['data']['type'] == 'jumper':
                         self.velocity[1] = -15
                         self.just_jumped_from_jumper = True
@@ -75,6 +80,10 @@ class PhysicsEntities:
                     entity_rect.top = rect[0].bottom
                     self.collisions['up'] = True
                 self.pos[1] = entity_rect.y
+
+        for rect in tilemap.pixel_moving_platforms_around(self.pos):
+            if rect[1]['ismoving'] == True:
+                self.is_on_moving_plateform = True
 
 
         if movement[0] > 0:
@@ -236,6 +245,7 @@ class Player(PhysicsEntities):
             self.dashTimer += 1
             self.canDash = False
         
+
         #Manage collisions with Items entities
         for rect in tilemap.items_rects_around(self.pos):
             if self.rect().colliderect(rect[0]):

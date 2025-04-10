@@ -95,7 +95,7 @@ class Game:
                 self.tilemap.tilemap[str(tile_pos[0]) + ';' + str(tile_pos[1])] =  {'type': self.tile_list[self.current_tile_group], 'variant': self.current_tile_variant, 'pos': (tile_pos[0], tile_pos[1])}
             
             if self.clicking and self.ongrid and self.moving_tile:
-                self.tilemap.moving_tiles.append({'type': self.tile_list[self.current_tile_group], 'variant': self.current_tile_variant, 'pos': (tile_pos[0], tile_pos[1]), 'initial_pos' :  (tile_pos[0], tile_pos[1]), 'direction' : 'x','next_pos_increment' : 1, 'frame_counter':0, 'move_delay': 10})
+                self.tilemap.moving_tiles.append({'type': self.tile_list[self.current_tile_group], 'variant': self.current_tile_variant, 'pos': (tile_pos[0]*self.tilemap.tile_size, tile_pos[1]*self.tilemap.tile_size), 'initial_pos' :  (tile_pos[0] *self.tilemap.tile_size, tile_pos[1] *self.tilemap.tile_size), 'direction' : 'x','next_pos_increment' : 1, 'frame_counter':0, 'move_delay': 10})
 
 
             if self.right_clicking:
