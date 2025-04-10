@@ -31,6 +31,7 @@ class Game:
             'jumper' : load_images('Tiles/Jumper'),
             'items/cartes' : load_images('Items/Cartes'),
             'nocollisions': load_images('Tiles/NoCollisions'),
+            'invisible' : load_images('Tiles/Invisible'),
             'player/idle' : Animation(load_images('Personnages/Idle'), img_dur=6),
             'player/run' : Animation(load_images('Personnages/Run'), img_dur=4),
             'player/jump' : Animation(load_images('Personnages/Idle'), img_dur=6),

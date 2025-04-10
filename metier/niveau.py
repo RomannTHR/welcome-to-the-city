@@ -31,7 +31,7 @@ class Niveau(pygame.sprite.Sprite):
         self.projectiles = []
         self.movement = [False, False]
         #représente le bouton de retour au menu visible tout le temps en haut à droite
-        self.home_button = Button(450,30,"","Unlocked",self.game.assets['home_button'])
+        self.home_button = Button(530,20,"","Unlocked",self.game.assets['home_button'])
         #représente le bouton de retour au menu, visible lorsque l'on a gagné le niveau
         self.button_back = Button(150, 250, "", "Unlocked", self.game.assets['back_button'])
         #crée les instances de classe des enemies

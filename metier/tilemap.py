@@ -3,7 +3,7 @@ import pygame
 
 
 NEIGHTBOR_OFFSETS = [(1,0), (1,1), (1,-1), (0,1), (0,-1), (0,0), (-1,1), (-1,-1), (-1,0)] #Utile pour détecter toutes les potentielles entitées autour de notre entité 
-PHYSICS_TILES = {'grass','stone', 'plateforme', 'ice', 'purplegrass', 'jumper'}
+PHYSICS_TILES = {'grass','stone', 'plateforme', 'ice', 'purplegrass', 'jumper', 'invisible'}
 ITEMS_TILES = {'cartes'}
 
 class Tilemap:

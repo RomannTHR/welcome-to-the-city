@@ -38,6 +38,7 @@ class Game:
             'map_display' : load_png('Items/Cartes/scrolled_map.png'),
             'jumper' : load_images('Tiles/Jumper'),
             'nocollisions': load_images('Tiles/NoCollisions'),
+            'invisible' : load_images('Tiles/Invisible'),
         }
         
 

@@ -458,6 +458,9 @@ class FinalBoss(PhysicsEntities):
                 if self.life <= 0:
                     self.is_dying = True
                     self.death_timer = 360/2
+                    keys_to_remove = [key for key, tile in tilemap.tilemap.items() if tile.get('type') == 'invisible']
+                    for key in keys_to_remove:
+                        del tilemap.tilemap[key]
 
 
 
