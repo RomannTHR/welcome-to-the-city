@@ -150,6 +150,7 @@ class  Enemy(PhysicsEntities):
         self.direction = -1
         self.sended_Bullet = []
         self.can_fire = 0
+        self.set_action('idle')
         
     def update(self, tilemap, movement=(0, 0)):
         """
@@ -157,6 +158,7 @@ class  Enemy(PhysicsEntities):
         """
         self.pos[0] += self.direction*self.speed
         self.can_fire-=1
+        self.set_action('idle')
         distance_x = abs(self.pos[0] - self.game.player.pos[0])
         if distance_x < 300 and self.can_fire <= 0:
             self.shoot()
@@ -168,6 +170,7 @@ class  Enemy(PhysicsEntities):
             self.flip = True
         for bullet in self.sended_Bullet:
             bullet.update()
+        self.animation.update()
     def shoot(self):
         """
         Fonction qui fait tirer l'ennemi
@@ -296,6 +299,7 @@ class Player(PhysicsEntities):
 
     def checkLowPosition(self):
         if self.pos[1]>=640:
+
             self.explode()
     def explode(self):
         self.game.initialPosition = [100,50]
@@ -304,6 +308,9 @@ class Player(PhysicsEntities):
         self.life+=5
         self.jumpPower = -3.5
         self.set_action('idle')
+        sound = pygame.mixer.Sound("SONG/start.mp3")
+        sound.play()
+        return True
     def attack(self):
         return self.dammages
 
