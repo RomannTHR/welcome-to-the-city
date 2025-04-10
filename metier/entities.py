@@ -6,6 +6,11 @@ from metier.projectile import Projectile
 NEIGHTBOR_OFFSETS = [(1,0), (1,1), (1,-1), (0,1), (0,-1), (0,0), (-1,1), (-1,-1), (-1,0)] #Utile pour détecter toutes les potentielles entitées autour de notre entité 
 
 class PhysicsEntities:
+
+    """
+    Classe qui représente toutes les entitées de la map ex : Player, Monstres, Ennemis...
+    """
+
     def __init__(self, game, e_type, pos, size,dammages = 5):
         self.game = game
         self.type = e_type
@@ -27,14 +32,24 @@ class PhysicsEntities:
 
 
     def rect(self):
+        
         return pygame.Rect(self.pos[0],self.pos[1],self.size[0],self.size[0])
 
     def set_action(self, action):
+        """
+        Defini une action / une animation à faire par l'entité (ex: Courir, Marcher, Attendre, Sauter...)
+        """
         if action != self.action:
             self.action = action
             self.animation = self.game.assets[self.type + '/' + self.action].copy()
 
     def update(self, tilemap, movement = (0, 0)):
+
+        """
+        Va gérer les collisions de l'entité avec la map, les déplacements...
+        """
+
+
         self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
         frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
         self.pos[0] += frame_movement[0] 
@@ -42,7 +57,6 @@ class PhysicsEntities:
         entity_rect = self.rect()
 
         
-        print(self.is_on_moving_plateform)
 
         #Manage collisions with physics entities
         for rect in tilemap.physics_rect_around(self.pos):
@@ -114,7 +128,9 @@ class PhysicsEntities:
         else:
             self.explode()
     def explode(self):
-        print("chui mort")
+        """
+        Fais mourir l'entité (notamment le joueur)
+        """
         self.game.initialPosition = [100,50]
         self.pos = self.game.initialPosition
         self.velocity = [0, 0]
@@ -136,6 +152,9 @@ class  Enemy(PhysicsEntities):
         self.can_fire = 0
         
     def update(self, tilemap, movement=(0, 0)):
+        """
+        Va gérer les projectiles, les collisions avec les balles...
+        """
         self.pos[0] += self.direction*self.speed
         self.can_fire-=1
         distance_x = abs(self.pos[0] - self.game.player.pos[0])
@@ -150,6 +169,9 @@ class  Enemy(PhysicsEntities):
         for bullet in self.sended_Bullet:
             bullet.update()
     def shoot(self):
+        """
+        Fonction qui fait tirer l'ennemi
+        """
         dx = self.game.player.pos[0] - self.pos[0]
         dy = self.game.player.pos[1] - self.pos[1]
         #made with chatgpt
@@ -188,10 +210,28 @@ class Player(PhysicsEntities):
         self.map_number = 0
 
         
+        #HPs
+        self.max_life = 5
+        self.life = 5
+
+
         #PowerUp
         self.isShielded = False
         self.jumpPower = -3.5
-    
+        
+    def render(self, surf, offset=(0,0)):
+        super().render(surf,offset)
+        bar_width = 25
+        bar_height = 3
+        hp_percent = max(self.life / self.max_life, 0)
+
+        bar_x = self.pos[0] - offset[0] + self.anim_offset[0] + 2.5
+        bar_y = self.pos[1] - offset[1] + self.anim_offset[1] - 10 
+
+        pygame.draw.rect(surf, (50, 50, 50), (bar_x, bar_y, bar_width, bar_height))
+
+        pygame.draw.rect(surf, (0, 255, 0), (bar_x, bar_y, int(bar_width * hp_percent), bar_height))
+
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
         self.checkLowPosition()
@@ -253,6 +293,7 @@ class Player(PhysicsEntities):
                     self.map_number += 1
                     del tilemap.tilemap[str(rect[1]['data']['pos'][0]) + ';' + str(rect[1]['data']['pos'][1])]
 
+
     def checkLowPosition(self):
         if self.pos[1]>=640:
             self.explode()
@@ -280,6 +321,10 @@ class FinalBoss(PhysicsEntities):
         self.spawn_duration = 2*60
         self.spawn_timer = 0
 
+        self.death_timer = 0
+        self.is_dying = False
+        self.is_dead = False
+
         self.is_attacking = False
         self.wait_attack_timer = 2*60
         self.attack_duration = 1*60 #1 seconde
@@ -287,9 +332,8 @@ class FinalBoss(PhysicsEntities):
         self.set_action('idle')
 
         #Paramètrs du boss
-
-        self.hp = 100
-        self.armor = 10
+        self.max_life = 100
+        self.life = 100
 
 
 
@@ -323,13 +367,15 @@ class FinalBoss(PhysicsEntities):
     def update(self, tilemap, player, movement=(0,0)):
         
 
-        #Définir le mouvement
         self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
         player_pos = player.pos
-        if player_pos[0] > self.physics_pos[0]:
-            direction = 1
-        elif player_pos[0] < self.physics_pos[0]:
-            direction = -1
+        if not self.is_dying:
+            if player_pos[0] > self.physics_pos[0]:
+                direction = 1
+            elif player_pos[0] < self.physics_pos[0]:
+                direction = -1
+            else:
+                direction = 0
         else:
             direction = 0
 
@@ -402,34 +448,73 @@ class FinalBoss(PhysicsEntities):
         finalboss_rect = self.rect()
         if player.is_attacking and player.attack_timer == 15:
             if finalboss_rect.colliderect(player_rect):
-                print("J'ai attaquié le boss")
+                self.life -= 5
+                if self.life <= 0:
+                    self.is_dying = True
+                    self.death_timer = 360/2
 
 
 
 
-        if self.is_attacking:
+        if self.is_attacking and not self.is_dying:
             self.attack_timer -= 1
             if self.attack_timer == self.attack_duration//2:
                 #Check if the player rect collide with the boss rect, if yes, then apply boss damage
                 if finalboss_rect.colliderect(player_rect):
-                    print("Touché")
+                    player.life -= 1
+
+                    if player.life == 0:
+                        player.explode()
+
             if self.attack_timer <= 0:
                 self.is_attacking = False
             else:
                 self.set_action('attack')
-        elif self.is_spawning:
+        elif self.is_spawning and not self.is_dying:
             self.spawn_timer -= 1
             if self.spawn_timer <= 0:
                 self.is_spawning = False
             else:
                 self.set_action('spawning')
+        elif self.is_dying:
+            self.death_timer -= 1
+            if self.death_timer <= 0:
+                self.is_dying = False
+                self.is_dead = True
+                self.game.finalboss = None
+            else:
+                self.set_action('death')
         else:
             self.set_action('idle')
 
 
         self.animation.update()
 
+    def explode(self):
+        #self.game.initialPosition = [100,50]
+        #self.pos = self.game.initialPosition
+        #self.velocity = [0, 0]
+        #self.life+=5
+        #self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
+        self.set_action('death')
+
+
     def render(self, surf, offset):
         draw_x = self.physics_pos[0] - (self.size[0] - self.hitbox_size[0]) // 2
         draw_y = self.physics_pos[1] - (self.size[1] - self.hitbox_size[1]) + 16
+
+        #Aide de ChatGPT pour la barre d'hp
+        bar_width = 50
+        bar_height = 6
+        hp_percent = max(self.life / self.max_life, 0)
+
+
+        bar_x = self.physics_pos[0] - offset[0] - 10
+        bar_y = self.physics_pos[1] - offset[1] - 50 
+
+        pygame.draw.rect(surf, (50, 50, 50), (bar_x, bar_y, bar_width, bar_height))
+
+        pygame.draw.rect(surf, (255, 0, 0), (bar_x, bar_y, int(bar_width * hp_percent), bar_height))
+
+
         surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (draw_x - offset[0], draw_y - offset[1]))

@@ -22,6 +22,7 @@ class Niveau(pygame.sprite.Sprite):
         self.scroll = scroll
         self.tilemap = tilemap
         self.cartes = cartes
+        self.finalboss_number = 0
         self.cartes_founded = 0
         self.all_sprites = pygame.sprite.Group()
         self.projectiles = []
@@ -57,20 +58,23 @@ class Niveau(pygame.sprite.Sprite):
             self.player.update(self.tilemap,(self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=render_scroll)
             self.display.blit(self.game.assets['map_display'][0], (0,0))
-            rect_to_draw_player = self.player.rect().move(-self.scroll[0], -self.scroll[1])
-            rect_to_draw_finalboss = self.finalboss.rect().move(-self.scroll[0], -self.scroll[1])
-            pygame.draw.rect(self.display, (255, 0, 0), rect_to_draw_finalboss)
-            pygame.draw.rect(self.display, (255, 0, 0), rect_to_draw_player)
 
-            self.finalboss.render(self.display, offset=render_scroll)
-            self.finalboss.update(self.tilemap, self.player)
-
+            
+            if self.finalboss != None:
+                self.finalboss.render(self.display, offset=render_scroll)
+                self.finalboss.update(self.tilemap, self.player)
+                if self.finalboss.is_dead:
+                    self.finalboss_number = 1
+                    self.finalboss = None
 
             font = pygame.font.SysFont("Arial", 16)
             self.display.blit(self.game.assets['items/cartes'][2], (32, 32))
             text = font.render(': ' + str(self.player.map_number) + '/4', True, (0, 0, 0))
             self.display.blit(text, (64, 32 + 32/4))
 
+            self.display.blit(self.game.assets['monster_display'][0], (32, 64))
+            text = font.render(': ' + str(self.finalboss_number) + '/1', True, (0, 0, 0))
+            self.display.blit(text, (64, 64 + 32/4))
             for powerUp in self.game.powerUp:
                 powerUp.update()
                 powerUp.render(self.display,offset=render_scroll)

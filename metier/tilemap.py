@@ -8,7 +8,9 @@ ITEMS_TILES = {'cartes'}
 
 class Tilemap:
     #Tilemap basé sur une vidéo youtube : https://www.youtube.com/watch?v=2gABYM5M0ww&t=11420s
-
+    """
+    Classe qui va gérer toutes les textures de la map (îles, plateformes mobiles/immobiles/items...)
+    """
     def __init__(self, game, tile_size=16):
         self.game = game
         self.tile_size = tile_size
@@ -18,6 +20,9 @@ class Tilemap:
 
 
     def tiles_around(self, pos):
+        """
+        Va retourner toutes les textures autour d'une certaine position (basé sur la liste d'offset plus haut)
+        """
         tiles = []
         tile_loc = (int(pos[0] // self.tile_size), (int(pos[1] // self.tile_size)))
         for offset in NEIGHTBOR_OFFSETS:
@@ -33,18 +38,10 @@ class Tilemap:
                     tiles.append(tile)
         return tiles
 
-    def physics_rect_around(self, pos):
-        rects = []
-        for tile in self.tiles_around(pos):
-            if tile['type'] in PHYSICS_TILES:
-                if 'move_delay' in tile:
-                    rects.append((pygame.Rect(tile['pos'][0] * self.tile_size,tile['pos'][1] * self.tile_size,self.tile_size,self.tile_size), {'ismoving':True, 'next_pos_increment': tile['next_pos_increment'], 'direction': tile['direction'], 'data': tile}))
-                else:
-                    rects.append((pygame.Rect(tile['pos'][0] * self.tile_size,tile['pos'][1] * self.tile_size,self.tile_size,self.tile_size), {'ismoving':False, 'data': tile} ))
-        return rects
+
     
     def pixel_moving_platforms_around(self, pos, radius=64):
-        """Retourne les plateformes mobiles en pixel près proches de `pos`."""
+        """Retourne les plateformes mobiles en pixel très proches de pos."""
         rects = []
         for tile in self.moving_tiles:
             tile_rect = pygame.Rect(tile['pos'][0], tile['pos'][1], self.tile_size, self.tile_size)
@@ -63,6 +60,9 @@ class Tilemap:
         return rects
 
     def physics_rect_around(self, pos):
+        """
+        Va retourner toutes les textures 
+        """
         rects = []
 
         # Tiles sur grille
