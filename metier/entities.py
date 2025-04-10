@@ -32,8 +32,7 @@ class PhysicsEntities:
 
 
     def rect(self):
-        
-        return pygame.Rect(self.pos[0],self.pos[1],self.size[0],self.size[0])
+        return pygame.Rect(self.pos[0],self.pos[1],self.size[0],self.size[1])
 
     def set_action(self, action):
         """
@@ -152,16 +151,16 @@ class  Enemy(PhysicsEntities):
         self.can_fire = 0
         self.set_action('idle')
         
-    def update(self, tilemap, movement=(0, 0)):
+    def update(self, tilemap,player_pos0,player_pos1, movement=(0, 0)):
         """
         Va gérer les projectiles, les collisions avec les balles...
-        """
+
         self.pos[0] += self.direction*self.speed
         self.can_fire-=1
         self.set_action('idle')
-        distance_x = abs(self.pos[0] - self.game.player.pos[0])
-        if distance_x < 300 and self.can_fire <= 0:
-            self.shoot()
+        distance_x = abs(self.pos[0] - player_pos0)
+        if distance_x < 100 and self.can_fire <= 0:
+            self.shoot(player_pos0, player_pos1)
         if self.pos[0] <= self.start and self.direction == -1:
             self.direction = 1
             self.flip = False
@@ -171,12 +170,9 @@ class  Enemy(PhysicsEntities):
         for bullet in self.sended_Bullet:
             bullet.update()
         self.animation.update()
-    def shoot(self):
-        """
-        Fonction qui fait tirer l'ennemi
-        """
-        dx = self.game.player.pos[0] - self.pos[0]
-        dy = self.game.player.pos[1] - self.pos[1]
+    def shoot(self, player_pos0, player_pos1):
+        dx = player_pos0 - self.pos[0]
+        dy = player_pos1 - self.pos[1]
         #made with chatgpt
         dist = max((dx ** 2 + dy ** 2) ** 0.5, 1)
         direction = (dx / dist, dy / dist)
@@ -236,7 +232,6 @@ class Player(PhysicsEntities):
 
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
-        self.checkLowPosition()
         self.air_time += 1
         
 
@@ -298,8 +293,7 @@ class Player(PhysicsEntities):
 
     def checkLowPosition(self):
         if self.pos[1]>=640:
-
-            self.explode()
+            return True
     def explode(self):
         self.game.initialPosition = [100,50]
         self.pos = self.game.initialPosition

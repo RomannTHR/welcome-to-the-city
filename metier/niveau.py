@@ -35,12 +35,12 @@ class Niveau(pygame.sprite.Sprite):
         #représente le bouton de retour au menu, visible lorsque l'on a gagné le niveau
         self.button_back = Button(150, 250, "", "Unlocked", self.game.assets['back_button'])
         #crée les instances de classe des enemies
-        self.ennemies.append(Enemy(self.game,(215,300),(32,32),200,450))
         #crée les instances de classe des powers-up
-        self.powersUp.append(PowerUp(100,125,"powerUp/coffre_ferme.png", "Jump"))
+
         self.jump_power_timer = None
         #Représente l'état du jeux pour une mise en pause ou un reload
         self.status= None
+        self.isNotDead=True
 
         self.running = True
     #regarde si le joueur a trouvé toute les cartes
@@ -56,25 +56,43 @@ class Niveau(pygame.sprite.Sprite):
         clock = pygame.time.Clock()
         status = "continue"
         while self.running:
-            self.display.blit(self.game.assets['background'][0], (0,0))
+            self.delete_ennemies()
+            self.delete_powersUp()
+            self.initEnemies()
+            self.initPowersUp()
+            self.isNotDead=True
+            while self.isNotDead:
+                self.display.blit(self.game.assets['background'][0], (0,0))
+                self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
+                self.scroll[1] += (self.player.rect().centery - self.display.get_width() / 2 - self.scroll[1]) / 30
 
-            self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
-            self.scroll[1] += (self.player.rect().centery - self.display.get_width() / 2 - self.scroll[1]) / 30
-
-            render_scroll = (int(self.scroll[0]),int(self.scroll[1]))
-            
-            self.game.clouds.update()
-            self.game.clouds.render(self.display, offset=render_scroll)
-
-            self.tilemap.render(self.display, offset=render_scroll)
-            self.tilemap.update_tiles()
-            self.player.update(self.tilemap,(self.movement[1] - self.movement[0], 0))
-            self.player.render(self.display, offset=render_scroll)
-
-
-            self.handle_powersUp()
-            self.handle_ennemies()
-            self.display.blit(self.game.assets['map_display'][0], (0, 0))
+                render_scroll = (int(self.scroll[0]),int(self.scroll[1]))
+                self.game.clouds.update()
+                self.game.clouds.render(self.display, offset=render_scroll)
+                self.tilemap.render(self.display, offset=render_scroll)
+                self.tilemap.update_tiles()
+                self.player.update(self.tilemap,(self.movement[1] - self.movement[0], 0))
+                self.player.render(self.display, offset=render_scroll)
+                self.handle_powersUp()
+                self.handle_ennemies()
+                self.display.blit(self.game.assets['map_display'][0], (0, 0))
+                if self.player.checkLowPosition():
+                    self.player.explode()
+                    self.isNotDead=False
+                font = pygame.font.SysFont("Arial", 16)
+                self.display.blit(self.game.assets['items/cartes'][2], (32, 32))
+                text = font.render(': ' + str(self.player.map_number) + '/4', True, (0, 0, 0))
+                self.display.blit(text, (64, 32 + 32 / 4))
+                self.home_button.draw(self.game)
+                if not self.isWin:
+                    self.handle_pygame_events()
+                if self.jump_power_timer is not None:
+                    if pygame.time.get_ticks() >= self.jump_power_timer:
+                        self.player.jumpPower += 2
+                        self.jump_power_timer =None
+                self.checkWin()
+                self.screen.blit(pygame.transform.scale(self.display,self.screen.get_size()), (0,0))
+                pygame.display.update()
 
             
             if self.finalboss != None:
@@ -112,7 +130,7 @@ class Niveau(pygame.sprite.Sprite):
         for powerUp in self.powersUp:
             powerUp.update()
             powerUp.render(self.display, offset=render_scroll)
-            if powerUp.rect.colliderect(self.player) and not powerUp.isFound:
+            if powerUp.rect.colliderect(self.player.rect()) and not powerUp.isFound:
                 powerUp.changeStateOpen()
                 sound = pygame.mixer.Sound("SONG/powerUp.mp3")
                 sound.play()
@@ -126,7 +144,7 @@ class Niveau(pygame.sprite.Sprite):
     def handle_ennemies(self):
         render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
         for enemy in self.ennemies:
-            enemy.update(self.tilemap)
+            enemy.update(self.tilemap, self.player.pos[0],self.player.pos[1])
             enemy.render(self.display, offset=render_scroll)
             self.handle_bullets(enemy)
     #gère les balles (affichage, collisions avec le joueur et les murs, explosion)
@@ -137,6 +155,7 @@ class Niveau(pygame.sprite.Sprite):
             bullet.render(self.display, offset=render_scroll)
             if bullet.rect().colliderect(self.player.rect()):
                 if self.player.explode():
+                    self.isNotDead =False
                     self.status = "menu"
             tilesAround = self.game.tilemap.physics_rect_around(bullet.pos)
             self.handle_tiles_around(tilesAround,bullet,enemy)
@@ -146,6 +165,26 @@ class Niveau(pygame.sprite.Sprite):
                 if bullet in enemy.sended_Bullet:
                     enemy.sended_Bullet.remove(bullet)
     #gère tout les évènements du clavier et leurs actions associées
+    def initEnemies(self):
+        ennemie1 = Enemy(self.game, (352, 352), (32, 32), 352, 480)
+        ennemie2 = Enemy(self.game, (672, 352), (32, 32), 672, 768)
+        ennemie3 = Enemy(self.game, (1344, 448), (32, 32), 1344, 1440)
+        ennemie4 = Enemy(self.game, (2112, 256), (32, 32), 2112, 2208)
+        ennemie5 = Enemy(self.game, (1760, -64), (32, 32), 1760, 1856)
+        ennemie6 = Enemy(self.game, (832, -384), (32, 32), 832, 928)
+        ennemie7 = Enemy(self.game, (960, 128), (32, 32), 960, 1088)
+        self.ennemies.extend([ennemie1, ennemie2, ennemie3, ennemie4, ennemie5, ennemie6, ennemie7])
+    def initPowersUp(self):
+        powerUp1 = PowerUp(704, 340, "powerUp/coffre_ferme.png", "Jump")
+        powerUp2 = PowerUp(1408, 192, "powerUp/coffre_ferme.png", "Shield")
+        powerUp3 = PowerUp(2048, -32, "powerUp/coffre_ferme.png", "Jump")
+        powerUp4 = PowerUp(64, -576, "powerUp/coffre_ferme.png", "Shield")
+        self.powersUp.extend([powerUp1, powerUp2, powerUp3, powerUp4])
+    def delete_ennemies(self):
+         self.ennemies.clear()
+
+    def delete_powersUp(self):
+        self.powersUp.clear()
     def handle_pygame_events(self):
         render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
         for event in pygame.event.get():
@@ -162,6 +201,7 @@ class Niveau(pygame.sprite.Sprite):
                 if self.home_button.handle_event(scaled_event) or self.button_back.handle_event(scaled_event):
                     self.status = "main"
                     self.running = False
+                    self.isNotDead =False
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
