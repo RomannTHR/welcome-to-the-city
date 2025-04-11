@@ -11,7 +11,7 @@ class PhysicsEntities:
     Classe qui représente toutes les entitées de la map ex : Player, Monstres, Ennemis...
     """
 
-    def __init__(self, game, e_type, pos, size,dammages = 5):
+    def __init__(self, game, e_type, pos, size,dammages = 1):
         self.game = game
         self.type = e_type
         self.pos = list(pos)

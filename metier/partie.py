@@ -27,38 +27,43 @@ class Partie(pygame.sprite.Sprite):
 
     def draw(self):
         '''
-        Cette class gère le menu de tout les niveaux ainsi que l'écran d'accueil (sur le même écran)
+        Cette classe gère le menu des niveaux et l'écran d'accueil.
         '''
-        while self.running:
-            pygame.mixer.init()
-            pygame.mixer.music.load("SONG/level.mp3")
-            pygame.mixer.music.play(-1)
-            self.game.display.blit(self.game.assets['background'][0], (0,0))
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-            pygame.display.flip()
+        pygame.mixer.init()
+        pygame.mixer.music.load("SONG/level.mp3")
+        pygame.mixer.music.play(-1)
 
-            buttons = []
-            button1=Button(20,30,"","Unlocked",self.game.assets['level1'])
-            button2=Button(150, 50,"","Locked",self.game.assets['level2'])
-            button3=Button(300, 25,"","Locked",self.game.assets['level3'])
-            button4=Button(450, 250,"","Locked",self.game.assets['level4'])
-            button5=Button(50, 350,"","Locked",self.game.assets['level5'])
-            button6=Button(170, 370,"","Locked",self.game.assets['level6'])
-            button7=Button(290, 400,"","Locked",self.game.assets['level7'])
-            button8=Button(450, 400,"","Locked",self.game.assets['level8'])
-            buttons.extend([button1,button2,button3,button4,button5,button6,button7,button8])
+        # Crée les boutons une seule fois
+        buttons = [
+            Button(20, 30, "", "Unlocked", self.game.assets['level1']),
+            Button(150, 50, "", "Locked", self.game.assets['level2']),
+            Button(300, 25, "", "Locked", self.game.assets['level3']),
+            Button(450, 250, "", "Locked", self.game.assets['level4']),
+            Button(50, 350, "", "Locked", self.game.assets['level5']),
+            Button(170, 370, "", "Locked", self.game.assets['level6']),
+            Button(290, 400, "", "Locked", self.game.assets['level7']),
+            Button(450, 400, "", "Locked", self.game.assets['level8']),
+        ]
+        button1 = buttons[0]  # bouton cliquable
+
+        while self.running:
+            self.game.display.blit(self.game.assets['background'][0], (0, 0))
 
             for button in buttons:
                 button.draw(self.game)
+
+            # 👉 On récupère tous les events une seule fois
             for event in pygame.event.get():
-                #si boutton 1 est cliqué , on lance la partie1 ect...
-                if button1.handle_event(event)==1:
+                if event.type == pygame.QUIT:
+                    self.running = False
+
+                # Clique sur le bouton 1
+                if button1.handle_event(event):
                     while True:
                         level1 = Niveau(game=self.game, screen=self.game.screen, scroll=self.game.scroll, display=self.game.display, tilemap=self.game.tilemap, state="Locked")
                         self.game.currentLevel = level1
                         level1.run()
+
                         if level1.status == "menu":
                             self.reload()
                             break
@@ -69,7 +74,6 @@ class Partie(pygame.sprite.Sprite):
                             break
 
             self.game.screen.blit(pygame.transform.scale(self.game.display, self.game.screen.get_size()), (0, 0))
-
             pygame.display.update()
 
         pygame.quit()

@@ -23,6 +23,7 @@ class Button:
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and (self.state =="Unlocked" or self.state=="Start"):
             if self.rect.collidepoint(event.pos):
+                print("Je clique")
                 sound = pygame.mixer.Sound("SONG/button_click.mp3")
                 sound.play()
                 return True
